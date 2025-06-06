@@ -1,9 +1,8 @@
-import { useSearchParams } from "next/navigation";
+import { ReadonlyURLSearchParams } from "next/navigation";
 import { collectionPoints } from "@/data/mockCollectionPoints";
 import { normalizeText } from "@/utils/text";
 
-export function useCollectionPoints() {
-    const searchParams = useSearchParams();
+export function useCollectionPoints(searchParams: ReadonlyURLSearchParams) {
     const query = normalizeText(searchParams.get('query') || '');
 
     const filteredPoints = collectionPoints.filter((point) => {

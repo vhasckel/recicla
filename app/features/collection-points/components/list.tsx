@@ -3,9 +3,11 @@
 import { CollectionPoint } from "@/types/collection-point"
 import { useCollectionPoints } from "@/hooks/useCollectionPoints"
 import { Card } from "./card"
+import { useSearchParams } from "next/navigation"
 
 export function CollectionPointsList() {
-    const { points } = useCollectionPoints();
+    const searchParams = useSearchParams();
+    const { points } = useCollectionPoints(searchParams);
 
     return (
         <div className="flex flex-col gap-2">
