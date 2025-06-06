@@ -3,10 +3,13 @@
 import { CollectionPoint } from "@/types/collection-point"
 import { useCollectionPoints } from "@/hooks/useCollectionPoints"
 import { Card } from "./card"
-import { useSearchParams } from "next/navigation"
+import { ReadonlyURLSearchParams } from "next/navigation"
 
-export function CollectionPointsList() {
-    const searchParams = useSearchParams();
+interface CollectionPointsListProps {
+    searchParams: ReadonlyURLSearchParams;
+}
+
+export function CollectionPointsList({ searchParams }: CollectionPointsListProps) {
     const { points } = useCollectionPoints(searchParams);
 
     return (

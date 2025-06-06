@@ -1,6 +1,6 @@
-import { CollectionPointsList } from "@/features/collection-points/components/list";
 import { Search } from "@/features/collection-points/components/search";
 import { Suspense } from "react";
+import { CollectionPointsWrapper } from "@/features/collection-points/components/collection-points-wrapper";
 
 export default function CollectionPoints() {
     return (
@@ -9,7 +9,7 @@ export default function CollectionPoints() {
                 <Search />
             </Suspense>
             <Suspense fallback={<div>Carregando pontos de coleta...</div>}>
-                <CollectionPointsList />
+                <CollectionPointsWrapper />
             </Suspense>
         </main>
     );
