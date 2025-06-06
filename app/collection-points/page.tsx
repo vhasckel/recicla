@@ -8,7 +8,9 @@ export default function CollectionPoints() {
             <Suspense fallback={<div>Carregando...</div>}>
                 <Search />
             </Suspense>
-            <CollectionPointsList />
+            <Suspense fallback={<div>Carregando pontos de coleta...</div>}>
+                <CollectionPointsList />
+            </Suspense>
         </main>
     );
 }
