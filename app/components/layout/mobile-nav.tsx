@@ -8,7 +8,7 @@ import clsx from "clsx";
 const links = [
   { name: "Home", href: "/dashboard", icon: HomeIcon },
   { name: "Pontos", href: "/collection-points", icon: MapPinIcon },
-  { name: "Perfil", href: "/dashboard/profile", icon: UserIcon },
+  { name: "Perfil", href: "/profile", icon: UserIcon },
 ];
 
 export default function MobileNav() {
