@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "@/hooks/useForm";
 import { LoginFormData } from "@/types/forms";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function LoginForm(): JSX.Element {
     const router = useRouter();
@@ -18,6 +19,8 @@ export default function LoginForm(): JSX.Element {
         email: '',
         password: ''
     });
+    const [successMessage, setSuccessMessage] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
 
     const validateEmail = (value: string) => {
         if (!value) return 'Email é obrigatório';
@@ -38,8 +41,30 @@ export default function LoginForm(): JSX.Element {
         const isPasswordValid = validateField('password', validatePassword);
 
         if (isEmailValid && isPasswordValid) {
-            // TODO: Implementar lógica de login
-            router.push('/dashboard');
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData),
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setSuccessMessage(data.message || 'Login bem-sucedido!');
+                    setErrorMessage(''); // Limpa qualquer erro anterior
+                    router.push('/dashboard'); // Redireciona para o dashboard
+                } else {
+                    const errorData = await response.json();
+                    setErrorMessage(errorData.message || 'Erro ao fazer login. Credenciais inválidas.');
+                    setSuccessMessage(''); // Limpa qualquer mensagem de sucesso anterior
+                }
+            } catch (error) {
+                console.error('Erro ao enviar formulário de login:', error);
+                setErrorMessage('Erro de conexão. Verifique sua rede e tente novamente.');
+                setSuccessMessage('');
+            }
         }
     };
 
@@ -82,6 +107,8 @@ export default function LoginForm(): JSX.Element {
                         />
                     ))}
                 </div>
+                {successMessage && <p className="text-green-500 text-center">{successMessage}</p>}
+                {errorMessage && <p className="text-red-500 text-center">{errorMessage}</p>}
                 <input type="hidden" name="redirectTo" />
                 <Button className="mt-4 w-full" type="submit">
                     Log in <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />

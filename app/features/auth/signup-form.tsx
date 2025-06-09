@@ -5,6 +5,8 @@ import { FormField } from "@/components/common/form-field";
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import { useForm } from "@/hooks/useForm";
 import { SignupFormData } from "@/types/forms";
+import { useState } from "react";
+import { useRouter } from 'next/navigation';
 
 export default function SignupForm() {
     const { formData, errors, handleChange, validateField } = useForm<SignupFormData>({
@@ -18,6 +20,10 @@ export default function SignupForm() {
         street: '',
         password: ''
     });
+
+    const [successMessage, setSuccessMessage] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+    const router = useRouter();
 
     const validateEmail = (value: string) => {
         if (!value) return 'Email é obrigatório';
@@ -70,6 +76,30 @@ export default function SignupForm() {
         if (validations.every(isValid => isValid)) {
             // TODO: Implementar lógica de cadastro
             console.log('Formulário válido:', formData);
+            try {
+                const response = await fetch('/api/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData),
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setSuccessMessage(data.message || 'Cadastro realizado com sucesso!');
+                    setErrorMessage(''); // Limpa qualquer erro anterior
+                    router.push('/dashboard'); // Redireciona para o dashboard
+                } else {
+                    const errorData = await response.json();
+                    setErrorMessage(errorData.message || 'Erro ao cadastrar. Tente novamente.');
+                    setSuccessMessage(''); // Limpa qualquer mensagem de sucesso anterior
+                }
+            } catch (error) {
+                console.error('Erro ao enviar formulário:', error);
+                setErrorMessage('Erro de conexão. Verifique sua rede e tente novamente.');
+                setSuccessMessage('');
+            }
         }
     };
 
@@ -173,6 +203,8 @@ export default function SignupForm() {
                         />
                     ))}
                 </div>
+                {successMessage && <p className="text-green-500 text-center">{successMessage}</p>}
+                {errorMessage && <p className="text-red-500 text-center">{errorMessage}</p>}
                 <input type="hidden" name="redirectTo" />
                 <Button className="mt-4 w-full" type="submit">
                     Cadastrar <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
