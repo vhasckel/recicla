@@ -25,7 +25,7 @@ export function Search({ searchParams }: SearchProps) {
     }, 300)
 
     return (
-        <div className="relative flex flex-1 flex-shrink-0 mx-2 mb-2">
+        <div>
             <label htmlFor="search" className="sr-only">
                 Procurar
             </label>

@@ -1,6 +1,9 @@
+'use client'
+
 import { Button } from "@/components/common/button";
 import { ImpactMetricProps } from "@/types/impact-metric";
-import { ShareIcon } from "@heroicons/react/24/outline";
+import { ArrowLeftStartOnRectangleIcon, ShareIcon } from "@heroicons/react/24/outline";
+import { useRouter } from "next/navigation";
 
 function ImpactMetric({ value, label }: ImpactMetricProps) {
     return (
@@ -12,11 +15,20 @@ function ImpactMetric({ value, label }: ImpactMetricProps) {
 }
 
 export default function Profile() {
+    const router = useRouter();
     const impactMetrics = [
         { value: "5 kg", label: "Reciclados" },
         { value: "0.5 m³", label: "Espaço em aterros sanitários" },
         { value: "50 kg", label: "CO2 evitado" },
     ];
+
+    // Função para fazer logout
+    const handleLogout = async () => {
+        // Chama o endpoint de logout (remove o cookie)
+        await fetch('/api/logout', { method: 'POST' });
+        // Redireciona para a página de login
+        router.push('/login');
+    };
 
     return (
         <main className="flex flex-col items-center justify-center md:h-screen px-4">
@@ -35,7 +47,14 @@ export default function Profile() {
                 ))}
             </div>
             <Button className="mt-4 w-full justify-center" type="button">
-                Compartilhar seu impacto <ShareIcon className="ml-2 h-5 w-5 text-gray-50"/>
+                <ShareIcon className="mr-2 h-5 w-5 text-gray-50"/> Compartilhar seu impacto
+            </Button>
+            <Button
+                className="mt-4 w-full justify-center"
+                type="button"
+                onClick={handleLogout}
+            >
+                <ArrowLeftStartOnRectangleIcon className="mr-2 h-5 w-5 text-gray-50"/> Fazer logout
             </Button>
         </main>
     )

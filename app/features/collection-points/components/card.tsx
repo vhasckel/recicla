@@ -20,7 +20,7 @@ export function Card({ address, lat, lng, id }: CardProps) {
     return (
         <div
             onClick={handleClick}
-            className="flex h-20 rounded-lg bg-white text-surface shadow-secondary md:max-w-xl md:flex-row mx-2 cursor-pointer">
+            className="flex h-20 rounded-lg bg-white text-surface shadow-secondary md:max-w-xl md:flex-row cursor-pointer">
             <img
                 className="w-24 rounded-s-lg object-cover"
                 src={mapUrl}
