@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation"
 
 interface CardProps {
   neighborhood: string;
+  city: string;
   street: string;
   number?: string;
   lat: number;
@@ -11,7 +12,7 @@ interface CardProps {
   id: string;
 }
 
-export function Card({ neighborhood, street, number, lat, lng, id }: CardProps) {
+export function Card({ neighborhood, city, street, number, lat, lng, id }: CardProps) {
     const router = useRouter();
     const mapUrl = `https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/pin-s+ff0000(${lng},${lat})/${lng},${lat},15,0/200x200?access_token=${process.env.NEXT_PUBLIC_MAPBOX_TOKEN}`;
 
@@ -29,7 +30,7 @@ export function Card({ neighborhood, street, number, lat, lng, id }: CardProps) 
                 alt={`Mapa da localização: ${street}, ${number || 's/n'}`}/>
             <div className="flex justify-start items-center gap-1 p-2">
                 <p className="text-sm text-textColor">
-                    {street}{number && `, ${number}`}
+                    {street}{`, ${number || 's/n'} - ${neighborhood}, ${city}`}
                 </p>
             </div>
         </div>

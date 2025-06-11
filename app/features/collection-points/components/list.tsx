@@ -19,6 +19,7 @@ export function CollectionPointsList({ searchParams }: CollectionPointsListProps
                     key={point.id}
                     id={point.id}
                     neighborhood={point.neighborhood}
+                    city={point.city}
                     street={point.street}
                     number={point.number}
                     lat={point.lat}
