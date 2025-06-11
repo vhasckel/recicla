@@ -26,8 +26,8 @@ export default function MobileNav() {
               className={clsx(
                 "flex flex-col items-center justify-center gap-1 p-2 text-sm",
                 {
-                  "text-primary": pathname === link.href,
-                  "text-gray-500": pathname !== link.href,
+                  "text-primary": pathname.startsWith(link.href),
+                  "text-gray-500": !pathname.startsWith(link.href),
                 }
               )}
             >
