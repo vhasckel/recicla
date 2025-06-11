@@ -25,7 +25,7 @@ export function Search({ searchParams }: SearchProps) {
     }, 300)
 
     return (
-        <div>
+        <div className="relative">
             <label htmlFor="search" className="sr-only">
                 Procurar
             </label>

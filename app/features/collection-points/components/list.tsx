@@ -13,7 +13,7 @@ export function CollectionPointsList({ searchParams }: CollectionPointsListProps
     const { points } = useCollectionPoints(searchParams);
 
     return (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 pb-24">
             {points.map((point: CollectionPoint) => (
                 <Card
                     key={point.id}
