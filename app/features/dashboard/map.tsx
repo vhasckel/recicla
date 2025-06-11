@@ -2,16 +2,18 @@
 
 import { useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
-import { collectionPoints } from '../../data/mockCollectionPoints';
 import { useSearchParams } from 'next/navigation';
 import 'leaflet/dist/leaflet.css';
 import type { Map as LeafletMap } from 'leaflet';
+import { useCollectionPoints } from '@/hooks/useCollectionPoints';
 
 const MapComponent = () => {
   const mapRef = useRef<LeafletMap | null>(null);
   const mapId = 'map-container-' + Math.random().toString(36).substr(2, 9);
   const searchParams = useSearchParams();
   const selectedPointId = searchParams.get('point');
+
+  const { points: collectionPoints } = useCollectionPoints(searchParams);
 
   useEffect(() => {
     const initMap = async () => {
@@ -95,8 +97,8 @@ const MapComponent = () => {
             .addTo(mapInstance)
             .bindPopup(`
               <div class="">
-                <h3 class="font-bold text-lg">${point.name}</h3>
-                <p class="text-sm">${point.address}</p>
+                <h3 class="font-bold text-lg">${point.neighborhood}</h3>
+                <p class="text-sm">${point.street}${point.number ? `, ${point.number}` : ''}</p>
                 <p class="text-sm mt-1">
                   <strong>Materiais aceitos:</strong> ${point.materials.join(', ')}
                 </p>
@@ -130,7 +132,7 @@ const MapComponent = () => {
         mapRef.current = null;
       }
     };
-  }, [mapId, selectedPointId]);
+  }, [mapId, selectedPointId, collectionPoints]);
 
   return (
     <div className="h-full w-full min-h-[400px]">

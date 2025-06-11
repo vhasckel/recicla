@@ -1,10 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/common/button';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { FormField } from '@/components/common/form-field';
 import { MultiSelect } from '@/components/multi-select';
+import { useCollectionPoints } from '@/hooks/useCollectionPoints';
+import { CollectionPoint } from '@/types/collection-point';
+import { geocodeAddress } from '@/lib/geocoding';
+import { fetchAddressByCep } from '@/lib/viacep';
 
 // Lista de materiais predefinidos no formato para react-select
 const AVAILABLE_MATERIALS = [
@@ -18,53 +22,97 @@ const AVAILABLE_MATERIALS = [
 ];
 
 export default function NewCollectionPoint() {
-  // Estados para os campos do formulário
-  const [name, setName] = useState('');
-  const [address, setAddress] = useState('');
-  const [lat, setLat] = useState<number | ''>('');
-  const [lng, setLng] = useState<number | ''>('');
-  // O estado materials continua sendo um array de strings (apenas os valores)
+  const [cep, setCep] = useState('');
+  const [city, setCity] = useState('');
+  const [neighborhood, setNeighborhood] = useState('');
+  const [street, setStreet] = useState('');
+  const [number, setNumber] = useState<string | ''>('');
   const [materials, setMaterials] = useState<string[]>([]);
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
+  const [loadingCep, setLoadingCep] = useState(false);
+  const [cepError, setCepError] = useState<string | null>(null);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const { addCollectionPoint } = useCollectionPoints(searchParams);
 
-  // Função chamada ao enviar o formulário
+  useEffect(() => {
+    const processCep = async () => {
+      if (cep.length !== 8) {
+        setCepError(null);
+        setCity('');
+        setNeighborhood('');
+        setStreet('');
+        return;
+      }
+
+      setLoadingCep(true);
+      setCepError(null);
+
+      const addressData = await fetchAddressByCep(cep);
+
+      if (addressData === null) {
+        setCepError('CEP não encontrado ou erro ao buscar dados.');
+        setCity('');
+        setNeighborhood('');
+        setStreet('');
+      } else {
+        setCity(addressData.localidade || '');
+        setNeighborhood(addressData.bairro || '');
+        setStreet(addressData.logradouro || '');
+      }
+      setLoadingCep(false);
+    };
+
+    processCep();
+  }, [cep]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSuccess('');
     setError('');
 
-    // Validação dos campos (materiais não pode ser vazio)
-    if (!name || !address || lat === '' || lng === '' || materials.length === 0) {
-      setError('Preencha todos os campos e selecione ao menos um material.');
+    if (!cep || !city || !neighborhood || !street || materials.length === 0) {
+      setError('Preencha todos os campos obrigatórios e selecione ao menos um material.');
       return;
     }
 
-    // Preparar dados para simulação (em um backend real, enviaria para a API)
-    const newPoint = {
-      name,
-      address,
-      lat: Number(lat),
-      lng: Number(lng),
-      materials, // materials já é um array de strings
+    const fullAddressString = `${number ? number + ', ' : ''}${street}, ${neighborhood}, ${city}, ${cep}`;
+    const coords = await geocodeAddress(fullAddressString);
+
+    if (coords === null) {
+      setError('Não foi possível encontrar as coordenadas para o endereço fornecido ou erro de conexão.');
+      return;
+    }
+
+    // (em um backend real, enviaria para a API)
+    const newPoint: CollectionPoint = {
+      id: Date.now().toString(),
+      name: neighborhood,
+      cep,
+      city,
+      neighborhood,
+      street,
+      number: number || undefined,
+      lat: coords.lat,
+      lng: coords.lng,
+      materials, 
     };
+
+    // Adicionar o novo ponto ao mock (via localStorage)
+    addCollectionPoint(newPoint);
 
     console.log('Novo Ponto de Coleta (simulado):', newPoint);
 
-    // Simula sucesso no cadastro
     setSuccess('Ponto cadastrado com sucesso!');
-    // Redireciona para a listagem após 1,5s
     setTimeout(() => {
       router.push('/collection-points');
     }, 1500);
   };
 
-  // Função para lidar com a seleção múltipla de materiais usando react-select
-  const handleMaterialChange = (selectedOptions: any) => {
-    // selectedOptions será um array de { value, label } ou null
+  const handleMaterialChange = (selectedOptions: string[]) => {
     if (selectedOptions) {
-      setMaterials(selectedOptions.map((option: { value: string }) => option.value));
+      setMaterials(selectedOptions); 
     } else {
       setMaterials([]);
     }
@@ -75,42 +123,51 @@ export default function NewCollectionPoint() {
       <h1 className="text-2xl font-bold mb-4">Cadastrar novo ponto de coleta</h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full max-w-md bg-white p-6 rounded-lg shadow">
         <FormField
-          id="name"
-          name="name"
+          id="cep"
+          name="cep"
           type="text"
-          placeholder="Nome do Ponto"
-          value={name}
-          onChange={e => setName(e.target.value)}
+          placeholder="CEP"
+          value={cep}
+          onChange={e => setCep(e.target.value)}
           required
         />
+        {loadingCep && <p className="text-blue-500 text-sm">Buscando endereço...</p>}
+        {cepError && <p className="text-red-500 text-sm">{cepError}</p>}
         <FormField
-          id="address"
-          name="address"
+          id="city"
+          name="city"
           type="text"
-          placeholder="Endereço Completo"
-          value={address}
-          onChange={e => setAddress(e.target.value)}
+          placeholder="Cidade"
+          value={city}
+          onChange={e => setCity(e.target.value)}
           required
         />
         <FormField
-          id="lat"
-          name="lat"
-          type="number"
-          placeholder="Latitude"
-          value={lat.toString()}
-          onChange={e => setLat(Number(e.target.value))}
+          id="neighborhood"
+          name="neighborhood"
+          type="text"
+          placeholder="Bairro"
+          value={neighborhood}
+          onChange={e => setNeighborhood(e.target.value)}
           required
         />
         <FormField
-          id="lng"
-          name="lng"
-          type="number"
-          placeholder="Longitude"
-          value={lng.toString()}
-          onChange={e => setLng(Number(e.target.value))}
+          id="street"
+          name="street"
+          type="text"
+          placeholder="Rua"
+          value={street}
+          onChange={e => setStreet(e.target.value)}
           required
         />
-        {/* Componente Select do react-select para materiais */}
+        <FormField
+          id="number"
+          name="number"
+          type="text"
+          placeholder="Número (opcional)"
+          value={number}
+          onChange={e => setNumber(e.target.value)}
+        />
         <label htmlFor="materials" className="block text-sm font-medium text-gray-700 mt-1">
           Materiais aceitos:
         </label>
@@ -123,7 +180,6 @@ export default function NewCollectionPoint() {
         />
 
         <Button type="submit">Cadastrar</Button>
-        {/* Mensagens de feedback */}
         {success && <p className="text-green-600">{success}</p>}
         {error && <p className="text-red-600">{error}</p>}
       </form>

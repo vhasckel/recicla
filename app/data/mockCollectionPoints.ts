@@ -4,7 +4,11 @@ export const collectionPoints: CollectionPoint[] = [
     {
         id: "1",
         name: "Centro",
-        address: "Rua Conselheiro Mafra, 100 - Centro, Florianópolis",
+        cep: "88000-000",
+        city: "Florianópolis",
+        neighborhood: "Centro",
+        street: "Rua Conselheiro Mafra",
+        number: "100",
         lat: -27.5969,
         lng: -48.5495,
         materials: ["Papel", "Plástico", "Vidro", "Metal"]
@@ -12,7 +16,11 @@ export const collectionPoints: CollectionPoint[] = [
     {
         id: "2",
         name: "Lagoa",
-        address: "Rua João Pio Duarte Silva, 500 - Lagoa da Conceição, Florianópolis",
+        cep: "88000-000",
+        city: "Florianópolis",
+        neighborhood: "Lagoa da Conceição",
+        street: "Rua João Pio Duarte Silva",
+        number: "500",
         lat: -27.5974,
         lng: -48.4677,
         materials: ["Papel", "Plástico", "Eletrônicos"]
@@ -20,7 +28,11 @@ export const collectionPoints: CollectionPoint[] = [
     {
         id: "3",
         name: "Trindade",
-        address: "Rua Lauro Linhares, 2000 - Trindade, Florianópolis",
+        cep: "88000-000",
+        city: "Florianópolis",
+        neighborhood: "Trindade",
+        street: "Rua Lauro Linhares",
+        number: "2000",
         lat: -27.5978,
         lng: -48.5207,
         materials: ["Vidro", "Metal", "Óleo de Cozinha"]
@@ -28,7 +40,11 @@ export const collectionPoints: CollectionPoint[] = [
     {
         id: "4",
         name: "Ingleses",
-        address: "Av. das Rendeiras, 500 - Ingleses, Florianópolis",
+        cep: "88000-000",
+        city: "Florianópolis",
+        neighborhood: "Ingleses",
+        street: "Av. das Rendeiras",
+        number: "500",
         lat: -27.4247,
         lng: -48.4255,
         materials: ["Papel", "Plástico", "Vidro", "Metal", "Eletrônicos"]
@@ -36,7 +52,11 @@ export const collectionPoints: CollectionPoint[] = [
     {
         id: "5",
         name: "Campeche",
-        address: "Rua Pequeno Príncipe, 1000 - Campeche, Florianópolis",
+        cep: "88000-000",
+        city: "Florianópolis",
+        neighborhood: "Campeche",
+        street: "Rua Pequeno Príncipe",
+        number: "1000",
         lat: -27.6847,
         lng: -48.4847,
         materials: ["Papel", "Plástico", "Vidro"]
