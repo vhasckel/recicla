@@ -11,13 +11,13 @@ const links = [
   { name: "Perfil", href: "/dashboard?view=profile", icon: UserIcon },
 ];
 
-export default function MobileNav() {
+export default function DesktopNav() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-gray-200 bg-white md:hidden">
-      <nav className="flex h-16 items-center justify-around">
+    <div className="fixed top-0 left-0 right-0 z-50 border-t border-gray-200 bg-white hidden md:block">
+      <nav className="flex h-16 items-center justify-center gap-5">
         {links.map((link) => {
           const LinkIcon = link.icon;
           const isActive = link.href === "/dashboard" ? pathname === link.href && !searchParams.get('view') : 
@@ -30,7 +30,7 @@ export default function MobileNav() {
               key={link.name}
               href={link.href}
               className={clsx(
-                "flex flex-col items-center justify-center gap-1 p-2 text-sm",
+                "flex items-center justify-center gap-1 p-2 text-sm",
                 {
                   "text-primary": isActive,
                   "text-gray-500": !isActive,
@@ -38,7 +38,7 @@ export default function MobileNav() {
               )}
             >
               <LinkIcon className="h-6 w-6" />
-              <span className="text-xs">{link.name}</span>
+              <span className="text-base">{link.name}</span>
             </Link>
           );
         })}

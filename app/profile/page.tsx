@@ -3,7 +3,10 @@
 import { Button } from "@/components/common/button";
 import { ImpactMetricProps } from "@/types/impact-metric";
 import { ArrowLeftStartOnRectangleIcon, ShareIcon } from "@heroicons/react/24/outline";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { ProfileSidebar } from "@/features/profile/profile-sidebar";
 
 function ImpactMetric({ value, label }: ImpactMetricProps) {
     return (
@@ -16,17 +19,40 @@ function ImpactMetric({ value, label }: ImpactMetricProps) {
 
 export default function Profile() {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const isMobile = useMediaQuery('(max-width: 768px)');
+
+    useEffect(() => {
+        const viewParam = searchParams.get('view');
+        if (viewParam === 'profile') {
+            if (isMobile) {
+                router.push('/profile');
+            } else {
+                setIsSidebarOpen(true);
+            }
+        } else {
+            setIsSidebarOpen(false);
+        }
+    }, [searchParams, isMobile, router]);
+
+    const handleSidebarOpenChange = (open: boolean) => {
+        setIsSidebarOpen(open);
+        if (!open) {
+            const currentSearchParams = new URLSearchParams(searchParams.toString());
+            currentSearchParams.delete('view');
+            router.replace(`/dashboard?${currentSearchParams.toString()}`);
+        }
+    };
+
     const impactMetrics = [
         { value: "5 kg", label: "Reciclados" },
         { value: "0.5 m³", label: "Espaço em aterros sanitários" },
         { value: "50 kg", label: "CO2 evitado" },
     ];
 
-    // Função para fazer logout
     const handleLogout = async () => {
-        // Chama o endpoint de logout (remove o cookie)
         await fetch('/api/logout', { method: 'POST' });
-        // Redireciona para a página de login
         router.push('/login');
     };
 
@@ -38,12 +64,12 @@ export default function Profile() {
             </div>
             <div className="relative mx-auto flex w-full max-w-[400px] flex-row justify-around pt-10">
                 {impactMetrics.map((metric, index) => (
-                    <>
-                        <ImpactMetric key={metric.label} value={metric.value} label={metric.label} />
+                    <div key={metric.label} className="flex items-center">
+                        <ImpactMetric value={metric.value} label={metric.label} />
                         {index < impactMetrics.length - 1 && (
-                            <div className="h-12 border-r border-gray-300"></div>
+                            <div className="h-12 border-r border-gray-300 mx-4"></div>
                         )}
-                    </>
+                    </div>
                 ))}
             </div>
             <Button className="mt-4 w-full justify-center" type="button">
@@ -56,6 +82,9 @@ export default function Profile() {
             >
                 <ArrowLeftStartOnRectangleIcon className="mr-2 h-5 w-5 text-gray-50"/> Fazer logout
             </Button>
+            {!isMobile && (
+                <ProfileSidebar open={isSidebarOpen} onOpenChange={handleSidebarOpenChange} />
+            )}
         </main>
     )
 }
