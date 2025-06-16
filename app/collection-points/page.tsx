@@ -5,6 +5,7 @@ import { SearchWrapper } from "@/features/collection-points/components/search-wr
 import { Button } from "@/components/common/button"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { Suspense } from "react"
 
 export default function CollectionPointsPage() {
   const router = useRouter()
@@ -16,7 +17,9 @@ export default function CollectionPointsPage() {
           <h1 className="text-xl font-semibold">Pontos de Coleta</h1>
         </div>
         <div className="mt-4">
-          <SearchWrapper />
+          <Suspense fallback={<div>Carregando busca...</div>}>
+            <SearchWrapper />
+          </Suspense>
         </div>
         <div className="mt-4">
           <Link href="/collection-points/new" className="w-full">
@@ -27,7 +30,9 @@ export default function CollectionPointsPage() {
         </div>
       </div>
       <div className="flex-1 overflow-y-auto p-4">
-        <CollectionPointsWrapper />
+        <Suspense fallback={<div>Carregando pontos de coleta...</div>}>
+          <CollectionPointsWrapper />
+        </Suspense>
       </div>
     </main>
   )

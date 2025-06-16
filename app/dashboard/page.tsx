@@ -7,29 +7,43 @@ import { ProfileSidebar } from "@/features/profile/profile-sidebar";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
-import { useUpdateSearchParams } from "@/hooks/useUpdateSearchParams";
 
-export default function Dashboard() {
+const VIEW_PARAM_COLLECTION_POINTS = 'collection-points';
+const VIEW_PARAM_PROFILE = 'profile';
+const VIEW_PARAM_COLLECTION_POINTS_NEW = 'collection-points/new';
+const DASHBOARD_ROUTE = '/dashboard';
+
+function DashboardContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isCollectionPointsSidebarOpen, setIsCollectionPointsSidebarOpen] = useState(false);
   const [isProfileSidebarOpen, setIsProfileSidebarOpen] = useState(false);
   const isMobile = useMediaQuery('(max-width: 768px)');
-  const updateSearchParams = useUpdateSearchParams();
 
   useEffect(() => {
     const viewParam = searchParams.get('view');
 
     if (isMobile) {
-      if (viewParam === 'collection-points') {
+      if (viewParam === VIEW_PARAM_COLLECTION_POINTS) {
         router.push('/collection-points');
-      } else if (viewParam === 'profile') {
+      } else if (viewParam === VIEW_PARAM_PROFILE) {
         router.push('/profile');
-      } else if (viewParam === 'collection-points/new') {
+      } else if (viewParam === VIEW_PARAM_COLLECTION_POINTS_NEW) {
         router.push('/collection-points/new');
       }
       setIsCollectionPointsSidebarOpen(false);
       setIsProfileSidebarOpen(false);
+    } else {
+      if (viewParam === VIEW_PARAM_COLLECTION_POINTS || viewParam === VIEW_PARAM_COLLECTION_POINTS_NEW) {
+        setIsCollectionPointsSidebarOpen(true);
+        setIsProfileSidebarOpen(false);
+      } else if (viewParam === VIEW_PARAM_PROFILE) {
+        setIsProfileSidebarOpen(true);
+        setIsCollectionPointsSidebarOpen(false);
+      } else {
+        setIsCollectionPointsSidebarOpen(false);
+        setIsProfileSidebarOpen(false);
+      }
     }
   }, [searchParams, isMobile, router]);
 
@@ -37,13 +51,15 @@ export default function Dashboard() {
     setIsCollectionPointsSidebarOpen(open);
     if (isMobile) {
       if (open) {
-        router.push('/collection-points');
+        router.push(VIEW_PARAM_COLLECTION_POINTS);
       } else {
-        router.push('/dashboard');
+        router.push(DASHBOARD_ROUTE);
       }
     } else {
       if (open) {
         setIsProfileSidebarOpen(false);
+      } else {
+        router.push(DASHBOARD_ROUTE);
       }
     }
   };
@@ -52,13 +68,16 @@ export default function Dashboard() {
     setIsProfileSidebarOpen(open);
     if (isMobile) {
       if (open) {
-        router.push('/profile');
-      } else {
-        router.push('/dashboard');
+        router.push(VIEW_PARAM_PROFILE);
+      }
+      else {
+        router.push(DASHBOARD_ROUTE);
       }
     } else {
       if (open) {
         setIsCollectionPointsSidebarOpen(false);
+      } else {
+        router.push(DASHBOARD_ROUTE);
       }
     }
   };
@@ -66,9 +85,7 @@ export default function Dashboard() {
   return (
     <main className="relative h-full">
       <div className="absolute inset-0 z-0">
-        <Suspense fallback={<div>Carregando mapa...</div>}>
-          <Map />
-        </Suspense>
+        <Map />
       </div>
       {!isMobile && (
         <>
@@ -84,4 +101,12 @@ export default function Dashboard() {
       )}
     </main>
   );
+}
+
+export default function Dashboard() {
+  return (
+    <Suspense fallback={<div>Carregando dashboard...</div>}>
+      <DashboardContent />
+    </Suspense>
+  )
 }

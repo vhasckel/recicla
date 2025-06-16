@@ -3,6 +3,7 @@
 import { ArrowLeftIcon } from "@heroicons/react/24/outline"
 import { useRouter } from "next/navigation"
 import CollectionPointForm from "@/features/collection-points/components/collection-point-form"
+import { Suspense } from "react"
 
 export default function NewCollectionPointPage() {
   const router = useRouter()
@@ -21,7 +22,9 @@ export default function NewCollectionPointPage() {
         </div>
       </div>
       <div className="flex-1 overflow-y-auto p-4">
-        <CollectionPointForm />
+        <Suspense fallback={<div>Carregando...</div>}>
+          <CollectionPointForm />
+        </Suspense>
       </div>
     </main>
   )

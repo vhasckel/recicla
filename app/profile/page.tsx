@@ -7,6 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { ProfileSidebar } from "@/features/profile/profile-sidebar";
+import { Suspense } from "react";
 
 function ImpactMetric({ value, label }: ImpactMetricProps) {
     return (
@@ -17,7 +18,7 @@ function ImpactMetric({ value, label }: ImpactMetricProps) {
     );
 }
 
-export default function Profile() {
+function ProfileContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -86,5 +87,13 @@ export default function Profile() {
                 <ProfileSidebar open={isSidebarOpen} onOpenChange={handleSidebarOpenChange} />
             )}
         </main>
+    )
+}
+
+export default function Profile() {
+    return (
+        <Suspense fallback={<div>Carregando perfil...</div>}>
+            <ProfileContent />
+        </Suspense>
     )
 }
