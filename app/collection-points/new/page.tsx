@@ -2,8 +2,12 @@
 
 import { ArrowLeftIcon } from "@heroicons/react/24/outline"
 import { useRouter } from "next/navigation"
-import CollectionPointForm from "@/features/collection-points/components/collection-point-form"
 import { Suspense } from "react"
+import dynamic from "next/dynamic";
+
+const CollectionPointForm = dynamic(() => import("@/features/collection-points/components/collection-point-form"), {
+  ssr: false,
+});
 
 export default function NewCollectionPointPage() {
   const router = useRouter()

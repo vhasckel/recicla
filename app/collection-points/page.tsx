@@ -1,11 +1,17 @@
 'use client'
 
-import { CollectionPointsWrapper } from "@/features/collection-points/components/collection-points-wrapper"
-import { SearchWrapper } from "@/features/collection-points/components/search-wrapper"
 import { Button } from "@/components/common/button"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Suspense } from "react"
+import dynamic from "next/dynamic";
+
+const CollectionPointsWrapper = dynamic(() => import("@/features/collection-points/components/collection-points-wrapper").then(mod => mod.CollectionPointsWrapper), {
+  ssr: false,
+});
+const SearchWrapper = dynamic(() => import("@/features/collection-points/components/search-wrapper").then(mod => mod.SearchWrapper), {
+  ssr: false,
+});
 
 export default function CollectionPointsPage() {
   const router = useRouter()

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { nunito } from './styles/fonts';
 import './globals.css';
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: 'Recicla',
@@ -14,7 +15,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR" className={`${nunito.variable}`}>
-      <body className={`${nunito.className}`}>{children}</body>
+      <body className={`${nunito.className}`}>
+        <Suspense fallback={<div>Carregando...</div>}>
+          {children}
+        </Suspense>
+      </body>
     </html>
   );
 }

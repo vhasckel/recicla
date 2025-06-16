@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { ProfileSidebar } from "@/features/profile/profile-sidebar";
 import { Suspense } from "react";
+import dynamic from "next/dynamic";
 
 function ImpactMetric({ value, label }: ImpactMetricProps) {
     return (
@@ -90,10 +91,14 @@ function ProfileContent() {
     )
 }
 
+const LazyProfileContent = dynamic(() => Promise.resolve(ProfileContent), {
+  ssr: false,
+});
+
 export default function Profile() {
     return (
         <Suspense fallback={<div>Carregando perfil...</div>}>
-            <ProfileContent />
+            <LazyProfileContent />
         </Suspense>
     )
 }

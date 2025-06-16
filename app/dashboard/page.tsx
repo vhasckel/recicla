@@ -2,6 +2,7 @@
 
 import Map from "@/features/dashboard/map";
 import { Suspense } from "react";
+import dynamic from "next/dynamic";
 import { CollectionPointsSidebar } from "@/features/collection-points/collection-points-sidebar";
 import { ProfileSidebar } from "@/features/profile/profile-sidebar";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -103,10 +104,14 @@ function DashboardContent() {
   );
 }
 
+const LazyDashboardContent = dynamic(() => Promise.resolve(DashboardContent), {
+  ssr: false,
+});
+
 export default function Dashboard() {
   return (
     <Suspense fallback={<div>Carregando dashboard...</div>}>
-      <DashboardContent />
+      <LazyDashboardContent />
     </Suspense>
   )
 }
