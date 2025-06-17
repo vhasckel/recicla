@@ -10,7 +10,6 @@ import { geocodeAddress } from '@/lib/geocoding';
 import { fetchAddressByCep } from '@/lib/viacep';
 import { useCollectionPoints } from '@/contexts/CollectionPointsContext';
 
-// Lista de materiais predefinidos no formato para react-select
 const AVAILABLE_MATERIALS = [
   { value: 'Plástico', label: 'Plástico' },
   { value: 'Papel', label: 'Papel' },
@@ -21,165 +20,170 @@ const AVAILABLE_MATERIALS = [
   { value: 'Óleo de Cozinha', label: 'Óleo de Cozinha' },
 ];
 
+interface FormData {
+  cep: string;
+  city: string;
+  neighborhood: string;
+  street: string;
+  number: string;
+  materials: string[];
+}
+
 export default function CollectionPointForm() {
-  const [cep, setCep] = useState('');
-  const [city, setCity] = useState('');
-  const [neighborhood, setNeighborhood] = useState('');
-  const [street, setStreet] = useState('');
-  const [number, setNumber] = useState<string | ''>('');
-  const [materials, setMaterials] = useState<string[]>([]);
-  const [success, setSuccess] = useState('');
-  const [error, setError] = useState('');
+  const searchParams = useSearchParams();
+
+  const [formData, setFormData] = useState<FormData>({
+    cep: '',
+    city: '',
+    neighborhood: '',
+    street: '',
+    number: '',
+    materials: [],
+  });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [loadingCep, setLoadingCep] = useState(false);
-  const [cepError, setCepError] = useState<string | null>(null);
+  const [error, setError] = useState('');
+  const [cepError, setCepError] = useState('');
+  const [success, setSuccess] = useState('');
+
   const router = useRouter();
-  const { addCollectionPoint } = useCollectionPoints('');
+  const { addCollectionPoint } = useCollectionPoints();
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  // O array de dependências vazio [] garante que ele só executa na montagem do componente.
   useEffect(() => {
-    const processCep = async () => {
-      if (cep.length !== 8) {
-        setCepError(null);
-        setCity('');
-        setNeighborhood('');
-        setStreet('');
-        return;
-      }
+    const initialCep = searchParams.get('cep');
+    const initialMaterials = searchParams.get('materials');
 
-      setLoadingCep(true);
-      setCepError(null);
+    if (initialCep || initialMaterials) {
+      setFormData(prev => ({
+        ...prev,
+        cep: initialCep ? initialCep.replace(/\D/g, '').substring(0, 8) : prev.cep,
+        materials: initialMaterials ? initialMaterials.split(',') : prev.materials,
+      }));
+    }
+  }, []);
 
-      const addressData = await fetchAddressByCep(cep);
-
-      if (addressData === null) {
-        setCepError('CEP não encontrado ou erro ao buscar dados.');
-        setCity('');
-        setNeighborhood('');
-        setStreet('');
-      } else {
-        setCity(addressData.localidade || '');
-        setNeighborhood(addressData.bairro || '');
-        setStreet(addressData.logradouro || '');
-      }
-      setLoadingCep(false);
-    };
-
-    processCep();
-  }, [cep]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSuccess('');
-    setError('');
-
-    if (!cep || !city || !neighborhood || !street || materials.length === 0) {
-      setError('Preencha todos os campos obrigatórios e selecione ao menos um material.');
+  // A dependência [formData.cep] garante a re-execução quando o usuário digita.
+  useEffect(() => {
+    if (formData.cep.length !== 8) {
+      setCepError('');
       return;
     }
 
-    const fullAddressString = `${number ? number + ', ' : ''}${street}, ${neighborhood}, ${city}, ${cep}`;
+    const handler = setTimeout(async () => {
+      setLoadingCep(true);
+      setCepError('');
+      const addressData = await fetchAddressByCep(formData.cep);
+
+      if (addressData) {
+        setFormData(prev => ({
+          ...prev,
+          city: addressData.localidade || '',
+          neighborhood: addressData.bairro || '',
+          street: addressData.logradouro || '',
+        }));
+      } else {
+        setCepError('CEP não encontrado.');
+      }
+      setLoadingCep(false);
+    }, 800);
+
+    // Função de limpeza: cancela o timeout anterior se o usuário digitar novamente
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [formData.cep]);
+
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+    setError('');
+    setSuccess('');
+
+    if (!formData.cep || !formData.city || !formData.street || formData.materials.length === 0) {
+      setError('Preencha todos os campos obrigatórios e selecione ao menos um material.');
+      setIsSubmitting(false);
+      return;
+    }
+
+    const fullAddressString = `${formData.number ? formData.number + ', ' : ''}${formData.street}, ${formData.neighborhood}, ${formData.city}, ${formData.cep}`;
     const coords = await geocodeAddress(fullAddressString);
 
-    if (coords === null) {
-      setError('Não foi possível encontrar as coordenadas para o endereço fornecido ou erro de conexão.');
+    if (!coords) {
+      setError('Não foi possível encontrar as coordenadas para o endereço. Verifique os dados.');
+      setIsSubmitting(false);
       return;
     }
 
     const newPoint: CollectionPoint = {
       id: Date.now().toString(),
-      name: neighborhood,
-      cep,
-      city,
-      neighborhood,
-      street,
-      number: number || undefined,
+      name: `Ponto em ${formData.neighborhood}`,
       lat: coords.lat,
       lng: coords.lng,
-      materials,
+      materials: formData.materials,
+      cep: formData.cep,
+      city: formData.city,
+      neighborhood: formData.neighborhood,
+      street: formData.street,
+      number: formData.number || undefined,
     };
 
     addCollectionPoint(newPoint);
-
-    console.log('Novo Ponto de Coleta (simulado):', newPoint);
-
-    setSuccess('Ponto cadastrado com sucesso!');
+    setSuccess('Ponto cadastrado com sucesso! Redirecionando...');
+    
     setTimeout(() => {
       router.push('/collection-points');
-    }, 1500);
-  };
-
-  const handleMaterialChange = (selectedOptions: string[]) => {
-    if (selectedOptions) {
-      setMaterials(selectedOptions);
-    } else {
-      setMaterials([]);
-    }
+    }, 2000);
   };
 
   return (
-    <main className="flex flex-col items-center min-h-screen p-4">
+    <main className="flex flex-col items-center w-full p-4">
       <h1 className="text-2xl font-bold mb-4">Cadastrar novo ponto de coleta</h1>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full max-w-md bg-white p-6 rounded-lg shadow">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full max-w-md bg-white p-6 rounded-lg shadow-md">
         <FormField
           id="cep"
           name="cep"
           type="text"
-          placeholder="CEP"
-          value={cep}
-          onChange={e => setCep(e.target.value)}
+          placeholder="CEP (apenas números)"
+          value={formData.cep}
+          onChange={handleInputChange}
           required
         />
         {loadingCep && <p className="text-blue-500 text-sm">Buscando endereço...</p>}
         {cepError && <p className="text-red-500 text-sm">{cepError}</p>}
-        <FormField
-          id="city"
-          name="city"
-          type="text"
-          placeholder="Cidade"
-          value={city}
-          onChange={e => setCity(e.target.value)}
-          required
-        />
-        <FormField
-          id="neighborhood"
-          name="neighborhood"
-          type="text"
-          placeholder="Bairro"
-          value={neighborhood}
-          onChange={e => setNeighborhood(e.target.value)}
-          required
-        />
-        <FormField
-          id="street"
-          name="street"
-          type="text"
-          placeholder="Rua"
-          value={street}
-          onChange={e => setStreet(e.target.value)}
-          required
-        />
-        <FormField
-          id="number"
-          name="number"
-          type="text"
-          placeholder="Número (opcional)"
-          value={number}
-          onChange={e => setNumber(e.target.value)}
-        />
-        <label htmlFor="materials" className="block text-sm font-medium text-gray-700 mt-1">
+        
+        <FormField id="city" name="city" type="text" placeholder="Cidade" value={formData.city} onChange={handleInputChange} required />
+        <FormField id="neighborhood" name="neighborhood" type="text" placeholder="Bairro" value={formData.neighborhood} onChange={handleInputChange} required />
+        <FormField id="street" name="street" type="text" placeholder="Rua" value={formData.street} onChange={handleInputChange} required />
+        <FormField id="number" name="number" type="text" placeholder="Número (opcional)" value={formData.number} onChange={handleInputChange} />
+        
+        <label htmlFor="materials" className="block text-sm font-medium text-gray-700 -mb-2">
           Materiais aceitos:
         </label>
         <MultiSelect
           options={AVAILABLE_MATERIALS}
-          onValueChange={handleMaterialChange}
-          defaultValue={materials}
+          onValueChange={(selected) => setFormData(prev => ({...prev, materials: selected}))}
+          defaultValue={formData.materials}
           placeholder="Selecione os materiais..."
           className="w-full"
         />
 
-        <Button type="submit">Cadastrar</Button>
-        {success && <p className="text-green-600">{success}</p>}
-        {error && <p className="text-red-600">{error}</p>}
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? 'Cadastrando...' : 'Cadastrar Ponto'}
+        </Button>
+
+        {success && <p className="text-green-600 text-center">{success}</p>}
+        {error && <p className="text-red-600 text-center">{error}</p>}
       </form>
     </main>
   );
-} 
+}

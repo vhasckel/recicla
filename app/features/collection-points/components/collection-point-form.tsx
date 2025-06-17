@@ -23,11 +23,8 @@ const AVAILABLE_MATERIALS = [
   { value: 'Óleo de Cozinha', label: 'Óleo de Cozinha' },
 ]
 
-interface CollectionPointFormProps {
-  searchParams: ReadonlyURLSearchParams;
-}
 
-export default function CollectionPointForm({ searchParams }: CollectionPointFormProps) {
+export default function CollectionPointForm() {
   const [cep, setCep] = useState('')
   const [city, setCity] = useState('')
   const [neighborhood, setNeighborhood] = useState('')
