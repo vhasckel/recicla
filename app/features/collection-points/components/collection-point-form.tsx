@@ -34,7 +34,7 @@ export default function CollectionPointForm() {
   const [cepError, setCepError] = useState<string | null>(null)
   const router = useRouter()
   const searchParams = useSearchParams()
-  const { addCollectionPoint } = useCollectionPoints(searchParams)
+  const { addCollectionPoint } = useCollectionPoints('')
 
   useEffect(() => {
     const processCep = async () => {

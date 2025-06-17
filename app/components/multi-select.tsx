@@ -133,7 +133,6 @@ export const MultiSelect = React.forwardRef<
       <Popover
         open={isPopoverOpen}
         onOpenChange={setIsPopoverOpen}
-        modal={modalPopover}
       >
         <PopoverTrigger asChild>
           <Button
@@ -185,13 +184,14 @@ export const MultiSelect = React.forwardRef<
           </Button>
         </PopoverTrigger>
         <PopoverContent
-          className="w-auto p-0"
+          className="w-[var(--radix-popover-trigger-width)] p-0 z-[100]"
           align="start"
+          sideOffset={4}
           onEscapeKeyDown={() => setIsPopoverOpen(false)}
         >
           <Command>
             <CommandInput
-              placeholder="Search..."
+              placeholder={placeholder}
               onKeyDown={handleInputKeyDown}
             />
             <OptionsList

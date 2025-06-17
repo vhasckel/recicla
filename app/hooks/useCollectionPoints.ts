@@ -1,16 +1,24 @@
-import { ReadonlyURLSearchParams } from "next/navigation";
 import { collectionPoints as initialCollectionPoints } from "@/data/mockCollectionPoints";
 import { normalizeText } from "@/utils/text";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { CollectionPoint } from '@/types/collection-point';
 
 const LOCAL_STORAGE_KEY = 'recicla_collection_points';
 
-export function useCollectionPoints(searchParams: ReadonlyURLSearchParams) {
+interface UseCollectionPointsResult {
+    points: CollectionPoint[];
+    totalPoints: number;
+    filteredCount: number;
+    addCollectionPoint: (point: CollectionPoint) => void;
+}
+
+export function useCollectionPoints(query: string): UseCollectionPointsResult {
     const [points, setPoints] = useState<CollectionPoint[]>([]);
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
+            localStorage.removeItem(LOCAL_STORAGE_KEY);
+
             const savedPoints = localStorage.getItem(LOCAL_STORAGE_KEY);
             if (savedPoints) {
                 setPoints(JSON.parse(savedPoints));
@@ -19,6 +27,12 @@ export function useCollectionPoints(searchParams: ReadonlyURLSearchParams) {
             }
         }
     }, []);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(points));
+        }
+    }, [points]);
 
     const addCollectionPoint = (newPoint: CollectionPoint) => {
         setPoints(prevPoints => {
@@ -30,20 +44,27 @@ export function useCollectionPoints(searchParams: ReadonlyURLSearchParams) {
         });
     };
 
-    const query = normalizeText(searchParams.get('query') || '');
+    const normalizedQuery = useMemo(() => {
+        return normalizeText(query || '');
+    }, [query]);
 
-    const filteredPoints = points.filter((point) => {
-        if (!query) return true;
-        
-        const fullAddress = `${point.street} ${point.number || ''} ${point.neighborhood} ${point.city} ${point.cep}`.trim();
-        const normalizedAddress = normalizeText(fullAddress);
-        const normalizedName = normalizeText(point.name);
-        const normalizedMaterials = point.materials.map(normalizeText);
+    const filteredPoints = useMemo(() => {
+        if (!normalizedQuery) {
+            return points;
+        }
 
-        return normalizedAddress.includes(query) || 
-               normalizedName.includes(query) ||
-               normalizedMaterials.some(material => material.includes(query));
-    });
+        const filtered = points.filter((point) => {
+            const fullAddress = `${point.street} ${point.number || ''} ${point.neighborhood} ${point.city} ${point.cep}`.trim();
+            const normalizedAddress = normalizeText(fullAddress);
+            const normalizedName = normalizeText(point.name);
+            const normalizedMaterials = point.materials.map(normalizeText);
+
+            return normalizedAddress.includes(normalizedQuery) ||
+                normalizedName.includes(normalizedQuery) ||
+                normalizedMaterials.some(material => material.includes(normalizedQuery));
+        });
+        return filtered;
+    }, [points, normalizedQuery]);
 
     return {
         points: filteredPoints,

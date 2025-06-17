@@ -10,7 +10,8 @@ interface CollectionPointsListProps {
 }
 
 export function CollectionPointsList({ searchParams }: CollectionPointsListProps) {
-    const { points } = useCollectionPoints(searchParams);
+    const query = searchParams.get('query') || '';
+    const { points } = useCollectionPoints(query);
 
     return (
         <div className="flex flex-col gap-2 pb-24">
