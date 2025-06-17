@@ -4,7 +4,7 @@ import { Button } from "@/components/common/button";
 import { ImpactMetricProps } from "@/types/impact-metric";
 import { ArrowLeftStartOnRectangleIcon, ShareIcon } from "@heroicons/react/24/outline";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { ProfileSidebar } from "@/features/profile/profile-sidebar";
 
@@ -17,7 +17,7 @@ function ImpactMetric({ value, label }: ImpactMetricProps) {
     );
 }
 
-export function ProfileContent() {
+function ProfileContentInner() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -87,5 +87,17 @@ export function ProfileContent() {
                 <ProfileSidebar open={isSidebarOpen} onOpenChange={handleSidebarOpenChange} />
             )}
         </main>
-    )
+    );
+}
+
+export function ProfileContent() {
+    return (
+        <Suspense fallback={
+            <div className="flex h-screen w-full items-center justify-center bg-gray-100">
+                <p className="text-lg text-gray-600">Carregando Perfil...</p>
+            </div>
+        }>
+            <ProfileContentInner />
+        </Suspense>
+    );
 }
