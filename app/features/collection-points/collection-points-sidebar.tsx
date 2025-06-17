@@ -14,7 +14,7 @@ interface CollectionPointsSidebarProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export function CollectionPointsSidebar({ open, onOpenChange }: CollectionPointsSidebarProps) {
+function CollectionPointsSidebarInner({ open, onOpenChange }: CollectionPointsSidebarProps) {
   const searchParams = useSearchParams();
   const isNewPoint = searchParams.get('view') === 'collection-points/new';
 
@@ -47,5 +47,13 @@ export function CollectionPointsSidebar({ open, onOpenChange }: CollectionPoints
         )}
       </SheetContent>
     </Sheet>
+  );
+}
+
+export function CollectionPointsSidebar(props: CollectionPointsSidebarProps) {
+  return (
+    <Suspense fallback={<div>Carregando sidebar...</div>}>
+      <CollectionPointsSidebarInner {...props} />
+    </Suspense>
   );
 } 
