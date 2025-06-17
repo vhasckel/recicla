@@ -23,15 +23,21 @@ export function Card({ neighborhood, city, street, number, lat, lng, id }: CardP
     return (
         <div
             onClick={handleClick}
-            className="flex h-20 rounded-lg bg-white text-surface shadow-secondary md:max-w-xl md:flex-row cursor-pointer">
-            <img
-                className="w-24 rounded-s-lg object-cover"
-                src={mapUrl}
-                alt={`Mapa da localização: ${street}, ${number || 's/n'}`}/>
-            <div className="flex justify-start items-center gap-1 p-2">
-                <p className="text-sm text-textColor">
-                    {street}{`, ${number || 's/n'} - ${neighborhood}, ${city}`}
-                </p>
+            className="flex flex-col rounded-lg bg-white text-surface shadow-secondary md:max-w-xl cursor-pointer hover:shadow-lg transition-shadow">
+            <div className="flex">
+                <img
+                    className="w-24 rounded-s-lg object-cover"
+                    src={mapUrl}
+                    alt={`Mapa da localização: ${street}, ${number || 's/n'}`}/>
+                <div className="flex flex-col justify-center p-2 flex-1">
+                    <h3 className="font-semibold text-textColor">{neighborhood}</h3>
+                    <p className="text-sm text-textColor">
+                        {street}{number ? `, ${number}` : ''}
+                    </p>
+                    <p className="text-sm text-textColor">
+                        {city}
+                    </p>
+                </div>
             </div>
         </div>
     )

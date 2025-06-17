@@ -13,33 +13,38 @@ interface UseCollectionPointsResult {
 }
 
 export function useCollectionPoints(query: string): UseCollectionPointsResult {
-    const [points, setPoints] = useState<CollectionPoint[]>([]);
-
-    useEffect(() => {
+    const [points, setPoints] = useState<CollectionPoint[]>(() => {
         if (typeof window !== 'undefined') {
-            localStorage.removeItem(LOCAL_STORAGE_KEY);
-
             const savedPoints = localStorage.getItem(LOCAL_STORAGE_KEY);
             if (savedPoints) {
-                setPoints(JSON.parse(savedPoints));
-            } else {
-                setPoints(initialCollectionPoints);
+                const userPoints = JSON.parse(savedPoints);
+                // Combina os pontos mockados com os pontos do usuário
+                const allPoints = [...initialCollectionPoints];
+                // Adiciona apenas os pontos do usuário que não existem nos mockados
+                userPoints.forEach((userPoint: CollectionPoint) => {
+                    if (!allPoints.some(mockPoint => mockPoint.id === userPoint.id)) {
+                        allPoints.push(userPoint);
+                    }
+                });
+                return allPoints;
             }
         }
-    }, []);
+        return initialCollectionPoints;
+    });
 
     useEffect(() => {
-        if (typeof window !== 'undefined') {
-            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(points));
+        if (typeof window !== 'undefined' && points.length > 0) {
+            // Salva apenas os pontos que não são mockados
+            const userPoints = points.filter(point => 
+                !initialCollectionPoints.some(mockPoint => mockPoint.id === point.id)
+            );
+            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(userPoints));
         }
     }, [points]);
 
     const addCollectionPoint = (newPoint: CollectionPoint) => {
         setPoints(prevPoints => {
             const updatedPoints = [...prevPoints, newPoint];
-            if (typeof window !== 'undefined') {
-                localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedPoints));
-            }
             return updatedPoints;
         });
     };
