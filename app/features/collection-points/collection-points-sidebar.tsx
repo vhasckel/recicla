@@ -25,7 +25,7 @@ export function CollectionPointsSidebar({ open, onOpenChange }: CollectionPoints
         </SheetHeader>
         {isNewPoint ? (
           <div className="flex-1 overflow-y-auto p-4">
-            <CollectionPointForm />
+            <CollectionPointForm searchParams={searchParams} />
           </div>
         ) : (
           <>
