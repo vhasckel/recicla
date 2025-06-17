@@ -7,6 +7,7 @@ import { SearchWrapper } from "@/features/collection-points/components/search-wr
 import { Button } from "@/components/common/button";
 import Link from "next/link";
 import CollectionPointForm from "@/features/collection-points/components/collection-point-form";
+import { Suspense } from "react";
 
 interface CollectionPointsSidebarProps {
   open: boolean;
@@ -25,7 +26,9 @@ export function CollectionPointsSidebar({ open, onOpenChange }: CollectionPoints
         </SheetHeader>
         {isNewPoint ? (
           <div className="flex-1 overflow-y-auto p-4">
-            <CollectionPointForm />
+            <Suspense fallback={<div>Carregando formulário...</div>}>
+              <CollectionPointForm />
+            </Suspense>
           </div>
         ) : (
           <>
