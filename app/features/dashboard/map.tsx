@@ -5,8 +5,9 @@ import dynamic from 'next/dynamic';
 import { useSearchParams } from 'next/navigation';
 import 'leaflet/dist/leaflet.css';
 import type { Map as LeafletMap, Marker as LeafletMarker } from 'leaflet';
-import { useCollectionPoints } from '@/hooks/useCollectionPoints';
+import { useCollectionPoints } from '@/contexts/CollectionPointsContext';
 import { normalizeText } from '@/utils/text';
+import { CollectionPoint } from '@/types/collection-point';
 
 const MapComponent = memo(() => {
   const mapRef = useRef<LeafletMap | null>(null);
@@ -15,10 +16,7 @@ const MapComponent = memo(() => {
   const searchParams = useSearchParams();
   const selectedPointId = searchParams.get('point');
 
-  // Estabilize o valor bruto da query string primeiro
   const rawQuery = searchParams.get('query') || '';
-
-  // Agora, memorize a query string normalizada baseada no valor bruto
   const query = useMemo(() => normalizeText(rawQuery), [rawQuery]);
 
   const { points: collectionPoints } = useCollectionPoints(query);
@@ -51,7 +49,7 @@ const MapComponent = memo(() => {
           boxZoom: true,
           keyboard: true,
           inertia: true,
-        }).setView([-27.5954, -48.5480], 12); // Default center/zoom
+        }).setView([-27.5954, -48.5480], 12);
         
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
           attribution: '&copy; OpenStreetMap contributors',
@@ -73,12 +71,12 @@ const MapComponent = memo(() => {
         setLeafletInstance(null);
       }
     };
-  }, [mapId]); // Dependencies: mapId (should be stable for the lifetime of the component)
+  }, [mapId]);
 
   // 2. Effect for updating map view and markers - Runs when selectedPointId or collectionPoints change
   useEffect(() => {
     if (!mapRef.current || !leafletInstance) {
-      return; // Map or Leaflet not initialized yet
+      return;
     }
 
     const mapInstance = mapRef.current;
@@ -86,7 +84,7 @@ const MapComponent = memo(() => {
 
     // 1. Update map center and zoom
     const selectedPoint = selectedPointId 
-      ? collectionPoints.find(point => point.id === selectedPointId) ?? null
+      ? collectionPoints.find((point: CollectionPoint) => point.id === selectedPointId) ?? null
       : null;
     
     const center: [number, number] = selectedPoint ? [selectedPoint.lat, selectedPoint.lng] : [-27.5954, -48.5480];
@@ -103,7 +101,7 @@ const MapComponent = memo(() => {
     }
 
     // 2. Update markers
-    const newMarkerIds = new Set(collectionPoints.map(p => p.id));
+    const newMarkerIds = new Set(collectionPoints.map((p: CollectionPoint) => p.id));
     const oldMarkerIds = new Set(Object.keys(markerRefs.current));
 
     // Remove markers that are no longer in collectionPoints
@@ -126,8 +124,8 @@ const MapComponent = memo(() => {
       popupAnchor: [0, -32],
     });
 
-    collectionPoints.forEach((point) => {
-      // Add or update marker only if it doesn't exist
+    // Add or update markers for all points
+    collectionPoints.forEach((point: CollectionPoint) => {
       if (!markerRefs.current[point.id]) {
         const marker = L.marker([point.lat, point.lng], { icon: customIcon })
           .addTo(mapInstance)
@@ -141,8 +139,21 @@ const MapComponent = memo(() => {
             </div>
           `);
         markerRefs.current[point.id] = marker;
+      } else {
+        // Update existing marker position and popup
+        const marker = markerRefs.current[point.id];
+        marker.setLatLng([point.lat, point.lng]);
+        marker.setPopupContent(`
+          <div class="">
+            <h3 class="font-bold text-lg">${point.neighborhood}</h3>
+            <p class="text-sm">${point.street}${point.number ? `, ${point.number}` : ''}</p>
+            <p class="text-sm mt-1">
+              <strong>Materiais aceitos:</strong> ${point.materials.join(', ')}
+            </p>
+          </div>
+        `);
       }
-      // If marker exists, ensure popup state is correct
+
       if (selectedPointId === point.id) {
         markerRefs.current[point.id].openPopup();
       } else {
@@ -150,10 +161,9 @@ const MapComponent = memo(() => {
       }
     });
 
-    // Invalidate size in case container size changed
     mapInstance.invalidateSize();
 
-  }, [selectedPointId, collectionPoints, leafletInstance]); // Dependencies for updates
+  }, [selectedPointId, collectionPoints, leafletInstance]);
 
   return (
     <div className="h-full w-full min-h-[400px]">
@@ -161,6 +171,8 @@ const MapComponent = memo(() => {
     </div>
   );
 });
+
+MapComponent.displayName = 'MapComponent';
 
 export default dynamic(() => Promise.resolve(MapComponent), {
   ssr: false,

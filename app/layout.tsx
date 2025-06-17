@@ -1,11 +1,13 @@
 import type { Metadata } from 'next';
-import { nunito } from './styles/fonts';
+import { Inter } from 'next/font/google';
 import './globals.css';
-import { Suspense } from "react";
+import { CollectionPointsProvider } from './contexts/CollectionPointsContext';
+
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'Recicla',
-  description: 'Sua plataforma de reciclagem',
+  description: 'Encontre pontos de coleta de recicláveis próximos a você',
 };
 
 export default function RootLayout({
@@ -14,11 +16,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt-BR" className={`${nunito.variable}`}>
-      <body className={`${nunito.className}`}>
-        <Suspense fallback={<div>Carregando...</div>}>
+    <html lang="pt-BR">
+      <body className={inter.className}>
+        <CollectionPointsProvider>
           {children}
-        </Suspense>
+        </CollectionPointsProvider>
       </body>
     </html>
   );

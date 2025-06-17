@@ -1,7 +1,7 @@
 'use client'
 
 import { CollectionPoint } from "@/types/collection-point"
-import { useCollectionPoints } from "@/hooks/useCollectionPoints"
+import { useCollectionPoints } from "@/contexts/CollectionPointsContext"
 import { Card } from "./card"
 import { ReadonlyURLSearchParams } from "next/navigation"
 

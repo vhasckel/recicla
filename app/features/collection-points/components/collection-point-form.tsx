@@ -2,13 +2,14 @@
 
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/common/button'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { FormField } from '@/components/common/form-field'
 import { MultiSelect } from '@/components/multi-select'
-import { useCollectionPoints } from '@/hooks/useCollectionPoints'
+import { useCollectionPoints } from '@/contexts/CollectionPointsContext'
 import { CollectionPoint } from '@/types/collection-point'
 import { geocodeAddress } from '@/lib/geocoding'
 import { fetchAddressByCep } from '@/lib/viacep'
+import { useMediaQuery } from '@/hooks/useMediaQuery'
 
 // Lista de materiais predefinidos no formato para react-select
 const AVAILABLE_MATERIALS = [
@@ -33,8 +34,8 @@ export default function CollectionPointForm() {
   const [loadingCep, setLoadingCep] = useState(false)
   const [cepError, setCepError] = useState<string | null>(null)
   const router = useRouter()
-  const searchParams = useSearchParams()
   const { addCollectionPoint } = useCollectionPoints('')
+  const isMobile = useMediaQuery('(max-width: 768px)')
 
   useEffect(() => {
     const processCep = async () => {
@@ -100,11 +101,13 @@ export default function CollectionPointForm() {
 
     addCollectionPoint(newPoint)
 
-    console.log('Novo Ponto de Coleta (simulado):', newPoint)
-
     setSuccess('Ponto cadastrado com sucesso!')
     setTimeout(() => {
-      router.push('/collection-points')
+      if (isMobile) {
+        router.push(`/collection-points?point=${newPoint.id}`)
+      } else {
+        router.push(`/dashboard?view=collection-points&point=${newPoint.id}`)
+      }
     }, 1500)
   }
 
