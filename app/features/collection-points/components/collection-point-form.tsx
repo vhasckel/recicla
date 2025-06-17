@@ -10,6 +10,7 @@ import { CollectionPoint } from '@/types/collection-point'
 import { geocodeAddress } from '@/lib/geocoding'
 import { fetchAddressByCep } from '@/lib/viacep'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
+import { ReadonlyURLSearchParams } from 'next/navigation'
 
 // Lista de materiais predefinidos no formato para react-select
 const AVAILABLE_MATERIALS = [
@@ -22,7 +23,11 @@ const AVAILABLE_MATERIALS = [
   { value: 'Óleo de Cozinha', label: 'Óleo de Cozinha' },
 ]
 
-export default function CollectionPointForm() {
+interface CollectionPointFormProps {
+  searchParams: ReadonlyURLSearchParams;
+}
+
+export default function CollectionPointForm({ searchParams }: CollectionPointFormProps) {
   const [cep, setCep] = useState('')
   const [city, setCity] = useState('')
   const [neighborhood, setNeighborhood] = useState('')

@@ -95,10 +95,10 @@ const LazyProfileContent = dynamic(() => Promise.resolve(ProfileContent), {
   ssr: false,
 });
 
-export default function Profile() {
+export default function ProfilePage() {
     return (
         <Suspense fallback={<div>Carregando perfil...</div>}>
             <LazyProfileContent />
         </Suspense>
-    )
+    );
 }

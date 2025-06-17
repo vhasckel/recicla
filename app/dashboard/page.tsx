@@ -86,18 +86,24 @@ function DashboardContent() {
   return (
     <main className="relative h-full">
       <div className="absolute inset-0 z-0">
-        <Map />
+        <Suspense fallback={<div>Carregando mapa...</div>}>
+          <Map />
+        </Suspense>
       </div>
       {!isMobile && (
         <>
-          <CollectionPointsSidebar
-            open={isCollectionPointsSidebarOpen}
-            onOpenChange={handleCollectionPointsSidebarOpenChange}
-          />
-          <ProfileSidebar
-            open={isProfileSidebarOpen}
-            onOpenChange={handleProfileSidebarOpenChange}
-          />
+          <Suspense fallback={<div>Carregando sidebar...</div>}>
+            <CollectionPointsSidebar
+              open={isCollectionPointsSidebarOpen}
+              onOpenChange={handleCollectionPointsSidebarOpenChange}
+            />
+          </Suspense>
+          <Suspense fallback={<div>Carregando perfil...</div>}>
+            <ProfileSidebar
+              open={isProfileSidebarOpen}
+              onOpenChange={handleProfileSidebarOpenChange}
+            />
+          </Suspense>
         </>
       )}
     </main>

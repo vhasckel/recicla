@@ -1,7 +1,7 @@
 'use client'
 
 import { ArrowLeftIcon } from "@heroicons/react/24/outline"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Suspense } from "react"
 import dynamic from "next/dynamic";
 
@@ -11,6 +11,7 @@ const CollectionPointForm = dynamic(() => import("@/features/collection-points/c
 
 export default function NewCollectionPointPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
 
   return (
     <main className="flex flex-col h-full">
@@ -27,7 +28,7 @@ export default function NewCollectionPointPage() {
       </div>
       <div className="flex-1 overflow-y-auto p-4">
         <Suspense fallback={<div>Carregando...</div>}>
-          <CollectionPointForm />
+          <CollectionPointForm searchParams={searchParams} />
         </Suspense>
       </div>
     </main>
