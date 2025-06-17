@@ -5,10 +5,10 @@ import { Button } from '@/components/common/button';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { FormField } from '@/components/common/form-field';
 import { MultiSelect } from '@/components/multi-select';
-import { useCollectionPoints } from '@/hooks/useCollectionPoints';
 import { CollectionPoint } from '@/types/collection-point';
 import { geocodeAddress } from '@/lib/geocoding';
 import { fetchAddressByCep } from '@/lib/viacep';
+import { useCollectionPoints } from '@/contexts/CollectionPointsContext';
 
 // Lista de materiais predefinidos no formato para react-select
 const AVAILABLE_MATERIALS = [
@@ -33,7 +33,6 @@ export default function CollectionPointForm() {
   const [loadingCep, setLoadingCep] = useState(false);
   const [cepError, setCepError] = useState<string | null>(null);
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { addCollectionPoint } = useCollectionPoints('');
 
   useEffect(() => {
