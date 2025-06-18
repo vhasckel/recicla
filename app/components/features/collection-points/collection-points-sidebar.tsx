@@ -6,13 +6,14 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
-import { CollectionPointsList } from '@/features/collection-points/components/list';
+import { CollectionPointsList } from '@/components/features/collection-points/components/list';
 import { useSearchParams } from 'next/navigation';
-import { SearchWrapper } from '@/features/collection-points/components/search-wrapper';
+import { SearchWrapper } from '@/components/features/collection-points/components/search-wrapper';
 import { Button } from '@/components/common/button';
 import Link from 'next/link';
-import CollectionPointForm from '@/features/collection-points/components/collection-point-form';
-import { Suspense } from 'react';
+import CollectionPointForm from '@/components/features/collection-points/components/collection-point-form';
+import { Suspense, useEffect, useState } from 'react';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 
 interface CollectionPointsSidebarProps {
   open: boolean;

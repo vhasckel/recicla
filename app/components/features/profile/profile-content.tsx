@@ -9,7 +9,8 @@ import {
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState, Suspense } from 'react';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
-import { ProfileSidebar } from '@/features/profile/profile-sidebar';
+import { ProfileSidebar } from '@/components/features/profile/profile-sidebar';
+import { IMPACT_METRICS } from '@/constants/metrics';
 
 function ImpactMetric({ value, label }: ImpactMetricProps) {
   return (
@@ -25,6 +26,7 @@ function ProfileContentInner() {
   const searchParams = useSearchParams();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const isMobile = useMediaQuery('(max-width: 768px)');
+  const impactMetrics = IMPACT_METRICS;
 
   useEffect(() => {
     const viewParam = searchParams.get('view');
@@ -44,12 +46,6 @@ function ProfileContentInner() {
       router.replace(`/dashboard`);
     }
   };
-
-  const impactMetrics = [
-    { value: '5 kg', label: 'Reciclados' },
-    { value: '0.5 m³', label: 'Espaço em aterros sanitários' },
-    { value: '50 kg', label: 'CO2 evitado' },
-  ];
 
   const handleLogout = async () => {
     await fetch('/api/logout', { method: 'POST' });

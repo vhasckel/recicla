@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import LoginForm from '@/features/auth/login-form';
+import LoginForm from '@/components/features/auth/login-form';
 
 export default function LoginPage() {
   return (
@@ -8,7 +8,13 @@ export default function LoginPage() {
         <div className="flex h-20 w-full items-end rounded-lg bg-primary p-3 md:h-36">
           <div className="w-32 text-white md:w-36"></div>
         </div>
-        <Suspense>
+        <Suspense
+          fallback={
+            <div className="flex h-screen w-full items-center justify-center bg-gray-100">
+              <p className="text-lg text-gray-600">Carregando...</p>
+            </div>
+          }
+        >
           <LoginForm />
         </Suspense>
       </div>

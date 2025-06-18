@@ -11,24 +11,17 @@ import { geocodeAddress } from '@/lib/geocoding';
 import { fetchAddressByCep } from '@/lib/viacep';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { ReadonlyURLSearchParams } from 'next/navigation';
-
-const AVAILABLE_MATERIALS = [
-  { value: 'Plástico', label: 'Plástico' },
-  { value: 'Papel', label: 'Papel' },
-  { value: 'Vidro', label: 'Vidro' },
-  { value: 'Metal', label: 'Metal' },
-  { value: 'Orgânico', label: 'Orgânico' },
-  { value: 'Eletrônicos', label: 'Eletrônicos' },
-  { value: 'Óleo de Cozinha', label: 'Óleo de Cozinha' },
-];
+import { AVAILABLE_MATERIALS } from '@/constants/materials';
 
 export default function CollectionPointForm() {
+  const [name, setName] = useState('');
+  const [address, setAddress] = useState('');
+  const [selectedMaterials, setSelectedMaterials] = useState<string[]>([]);
   const [cep, setCep] = useState('');
   const [city, setCity] = useState('');
   const [neighborhood, setNeighborhood] = useState('');
   const [street, setStreet] = useState('');
   const [number, setNumber] = useState<string | ''>('');
-  const [materials, setMaterials] = useState<string[]>([]);
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
   const [loadingCep, setLoadingCep] = useState(false);
@@ -36,6 +29,10 @@ export default function CollectionPointForm() {
   const router = useRouter();
   const { addCollectionPoint } = useCollectionPoints('');
   const isMobile = useMediaQuery('(max-width: 768px)');
+
+  const handleMaterialChange = (materials: string[]) => {
+    setSelectedMaterials(materials);
+  };
 
   useEffect(() => {
     const processCep = async () => {
@@ -73,7 +70,13 @@ export default function CollectionPointForm() {
     setSuccess('');
     setError('');
 
-    if (!cep || !city || !neighborhood || !street || materials.length === 0) {
+    if (
+      !cep ||
+      !city ||
+      !neighborhood ||
+      !street ||
+      selectedMaterials.length === 0
+    ) {
       setError(
         'Preencha todos os campos obrigatórios e selecione ao menos um material.'
       );
@@ -100,7 +103,7 @@ export default function CollectionPointForm() {
       number: number || undefined,
       lat: coords.lat,
       lng: coords.lng,
-      materials,
+      materials: selectedMaterials,
     };
 
     addCollectionPoint(newPoint);
@@ -113,14 +116,6 @@ export default function CollectionPointForm() {
         router.push(`/dashboard?view=collection-points&point=${newPoint.id}`);
       }
     }, 1500);
-  };
-
-  const handleMaterialChange = (selectedOptions: string[]) => {
-    if (selectedOptions) {
-      setMaterials(selectedOptions);
-    } else {
-      setMaterials([]);
-    }
   };
 
   return (
@@ -182,7 +177,7 @@ export default function CollectionPointForm() {
       <MultiSelect
         options={AVAILABLE_MATERIALS}
         onValueChange={handleMaterialChange}
-        defaultValue={materials}
+        defaultValue={selectedMaterials}
         placeholder="Selecione os materiais..."
         className="w-full"
       />

@@ -4,20 +4,12 @@ import { HomeIcon, UserIcon, MapPinIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import clsx from 'clsx';
+import { NAVIGATION_LINKS } from '@/constants/navigation';
 
-const links = [
-  { name: 'Home', href: '/dashboard', icon: HomeIcon },
-  {
-    name: 'Pontos',
-    href: '/dashboard?view=collection-points',
-    icon: MapPinIcon,
-  },
-  { name: 'Perfil', href: '/dashboard?view=profile', icon: UserIcon },
-];
-
-export default function MobileNav() {
+export function MobileNav() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const links = NAVIGATION_LINKS;
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-gray-200 bg-white md:hidden">

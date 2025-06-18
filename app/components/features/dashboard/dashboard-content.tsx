@@ -3,9 +3,9 @@
 import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
-import Map from '@/features/dashboard/map';
-import { CollectionPointsSidebar } from '@/features/collection-points/collection-points-sidebar';
-import { ProfileSidebar } from '@/features/profile/profile-sidebar';
+import Map from '@/components/features/dashboard/map';
+import { CollectionPointsSidebar } from '@/components/features/collection-points/collection-points-sidebar';
+import { ProfileSidebar } from '@/components/features/profile/profile-sidebar';
 
 const VIEW_PARAM_COLLECTION_POINTS = 'collection-points';
 const VIEW_PARAM_PROFILE = 'profile';
