@@ -9,10 +9,15 @@ function SearchWrapperInner() {
   return <Search searchParams={searchParams} />;
 }
 
-export function SearchWrapper() {
+interface SearchWrapperProps {
+  children?: React.ReactNode;
+}
+
+export function SearchWrapper({ children }: SearchWrapperProps) {
   return (
     <Suspense fallback={<div>Carregando busca...</div>}>
       <SearchWrapperInner />
+      {children}
     </Suspense>
   );
 }

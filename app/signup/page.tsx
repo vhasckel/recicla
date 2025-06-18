@@ -1,9 +1,16 @@
-import SignupForm from '@/features/auth/signup-form';
+import { Suspense } from 'react';
+import SignupForm from '@/components/features/auth/signup-form';
 
 export default function SignupPage() {
   return (
-    <div className="flex h-screen flex-col items-center justify-center">
+    <Suspense
+      fallback={
+        <div className="flex h-screen w-full items-center justify-center bg-gray-100">
+          <p className="text-lg text-gray-600">Carregando...</p>
+        </div>
+      }
+    >
       <SignupForm />
-    </div>
+    </Suspense>
   );
 }

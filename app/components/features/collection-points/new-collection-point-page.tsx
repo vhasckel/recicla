@@ -5,9 +5,16 @@ import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 
 const CollectionPointForm = dynamic(
-  () => import('@/features/collection-points/components/collection-point-form'),
+  () =>
+    import(
+      '@/components/features/collection-points/components/collection-point-form'
+    ),
   {
-    ssr: false,
+    loading: () => (
+      <div className="flex h-full w-full items-center justify-center">
+        <p className="text-lg text-gray-600">Carregando...</p>
+      </div>
+    ),
   }
 );
 

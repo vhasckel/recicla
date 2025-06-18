@@ -7,19 +7,28 @@ import dynamic from 'next/dynamic';
 const CollectionPointsWrapper = dynamic(
   () =>
     import(
-      '@/features/collection-points/components/collection-points-wrapper'
+      '@/components/features/collection-points/components/collection-points-wrapper'
     ).then((mod) => mod.CollectionPointsWrapper),
   {
-    ssr: false,
+    loading: () => (
+      <div className="flex h-full w-full items-center justify-center">
+        <p className="text-lg text-gray-600">Carregando...</p>
+      </div>
+    ),
   }
 );
+
 const SearchWrapper = dynamic(
   () =>
-    import('@/features/collection-points/components/search-wrapper').then(
-      (mod) => mod.SearchWrapper
-    ),
+    import(
+      '@/components/features/collection-points/components/search-wrapper'
+    ).then((mod) => mod.SearchWrapper),
   {
-    ssr: false,
+    loading: () => (
+      <div className="flex h-full w-full items-center justify-center">
+        <p className="text-lg text-gray-600">Carregando...</p>
+      </div>
+    ),
   }
 );
 
@@ -31,7 +40,9 @@ export function CollectionPointsPage() {
           <h1 className="text-xl font-semibold">Pontos de Coleta</h1>
         </div>
         <div className="mt-4">
-          <SearchWrapper />
+          <SearchWrapper>
+            <CollectionPointsWrapper />
+          </SearchWrapper>
         </div>
         <div className="mt-4">
           <Link href="/collection-points/new" className="w-full">
