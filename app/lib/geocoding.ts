@@ -1,6 +1,10 @@
-export const geocodeAddress = async (fullAddress: string): Promise<{ lat: number; lng: number; } | null> => {
+export const geocodeAddress = async (
+  fullAddress: string
+): Promise<{ lat: number; lng: number } | null> => {
   try {
-    const response = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(fullAddress)}&format=json&limit=1`);
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(fullAddress)}&format=json&limit=1`
+    );
     const data = await response.json();
 
     if (data && data.length > 0) {
@@ -12,4 +16,4 @@ export const geocodeAddress = async (fullAddress: string): Promise<{ lat: number
     console.error('Erro ao geocodificar o endereço:', err);
     return null;
   }
-}; 
+};

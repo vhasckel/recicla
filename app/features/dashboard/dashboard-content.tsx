@@ -1,14 +1,12 @@
-// @/features/dashboard/components/dashboard-content.tsx
-'use client'
+'use client';
 
-import { Suspense, useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
-import Map from "@/features/dashboard/map";
-import { CollectionPointsSidebar } from "@/features/collection-points/collection-points-sidebar";
-import { ProfileSidebar } from "@/features/profile/profile-sidebar";
+import { Suspense, useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
+import Map from '@/features/dashboard/map';
+import { CollectionPointsSidebar } from '@/features/collection-points/collection-points-sidebar';
+import { ProfileSidebar } from '@/features/profile/profile-sidebar';
 
-// As constantes e toda a lógica foram movidas para cá
 const VIEW_PARAM_COLLECTION_POINTS = 'collection-points';
 const VIEW_PARAM_PROFILE = 'profile';
 const VIEW_PARAM_COLLECTION_POINTS_NEW = 'collection-points/new';
@@ -17,11 +15,11 @@ const DASHBOARD_ROUTE = '/dashboard';
 export function DashboardContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [isCollectionPointsSidebarOpen, setIsCollectionPointsSidebarOpen] = useState(false);
+  const [isCollectionPointsSidebarOpen, setIsCollectionPointsSidebarOpen] =
+    useState(false);
   const [isProfileSidebarOpen, setIsProfileSidebarOpen] = useState(false);
   const isMobile = useMediaQuery('(max-width: 768px)');
 
-  // Este useEffect agora vive seguramente dentro de um componente de cliente
   useEffect(() => {
     const viewParam = searchParams.get('view');
 
@@ -36,7 +34,10 @@ export function DashboardContent() {
       setIsCollectionPointsSidebarOpen(false);
       setIsProfileSidebarOpen(false);
     } else {
-      if (viewParam === VIEW_PARAM_COLLECTION_POINTS || viewParam === VIEW_PARAM_COLLECTION_POINTS_NEW) {
+      if (
+        viewParam === VIEW_PARAM_COLLECTION_POINTS ||
+        viewParam === VIEW_PARAM_COLLECTION_POINTS_NEW
+      ) {
         setIsCollectionPointsSidebarOpen(true);
         setIsProfileSidebarOpen(false);
       } else if (viewParam === VIEW_PARAM_PROFILE) {
@@ -71,8 +72,7 @@ export function DashboardContent() {
     if (isMobile) {
       if (open) {
         router.push(VIEW_PARAM_PROFILE);
-      }
-      else {
+      } else {
         router.push(DASHBOARD_ROUTE);
       }
     } else {
@@ -87,13 +87,21 @@ export function DashboardContent() {
   return (
     <main className="relative h-full">
       <div className="absolute inset-0 z-0">
-        <Suspense fallback={<div className="flex h-full w-full items-center justify-center bg-gray-200">Carregando mapa...</div>}>
+        <Suspense
+          fallback={
+            <div className="flex h-full w-full items-center justify-center bg-gray-200">
+              Carregando mapa...
+            </div>
+          }
+        >
           <Map />
         </Suspense>
       </div>
       {!isMobile && (
         <>
-          <Suspense fallback={null}> {/* Sidebars não precisam de fallback visível */}
+          <Suspense fallback={null}>
+            {' '}
+            {/* Sidebars não precisam de fallback visível */}
             <CollectionPointsSidebar
               open={isCollectionPointsSidebarOpen}
               onOpenChange={handleCollectionPointsSidebarOpenChange}

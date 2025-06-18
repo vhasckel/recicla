@@ -1,8 +1,14 @@
-import { CommandGroup, CommandItem, CommandSeparator, CommandEmpty, CommandList } from "@/components/ui/command";
-import { Separator } from "@/components/ui/separator";
-import { CheckIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
-import React from "react";
+import {
+  CommandGroup,
+  CommandItem,
+  CommandSeparator,
+  CommandEmpty,
+  CommandList,
+} from '@/components/ui/command';
+import { Separator } from '@/components/ui/separator';
+import { CheckIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import React from 'react';
 
 interface Option {
   label: string;
@@ -34,10 +40,10 @@ export function OptionsList({
         <CommandItem key="all" onSelect={toggleAll} className="cursor-pointer">
           <div
             className={cn(
-              "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+              'mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary',
               selectedValues.length === options.length
-                ? "bg-primary text-primary-foreground"
-                : "opacity-50 [&_svg]:invisible"
+                ? 'bg-primary text-primary-foreground'
+                : 'opacity-50 [&_svg]:invisible'
             )}
           >
             <CheckIcon className="h-4 w-4" />
@@ -54,10 +60,10 @@ export function OptionsList({
             >
               <div
                 className={cn(
-                  "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                  'mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary',
                   isSelected
-                    ? "bg-primary text-primary-foreground"
-                    : "opacity-50 [&_svg]:invisible"
+                    ? 'bg-primary text-primary-foreground'
+                    : 'opacity-50 [&_svg]:invisible'
                 )}
               >
                 <CheckIcon className="h-4 w-4" />
@@ -77,16 +83,19 @@ export function OptionsList({
             <>
               <CommandItem
                 onSelect={handleClear}
-                className="flex-1 justify-center cursor-pointer"
+                className="flex-1 cursor-pointer justify-center"
               >
                 Clear
               </CommandItem>
-              <Separator orientation="vertical" className="flex min-h-6 h-full" />
+              <Separator
+                orientation="vertical"
+                className="flex h-full min-h-6"
+              />
             </>
           )}
           <CommandItem
             onSelect={closePopover}
-            className="flex-1 justify-center cursor-pointer max-w-full"
+            className="max-w-full flex-1 cursor-pointer justify-center"
           >
             Close
           </CommandItem>
@@ -94,4 +103,4 @@ export function OptionsList({
       </CommandGroup>
     </CommandList>
   );
-} 
+}

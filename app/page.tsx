@@ -1,5 +1,5 @@
-import { ArrowRightIcon } from "@heroicons/react/24/outline";
-import Link from "next/link";
+import { ArrowRightIcon } from '@heroicons/react/24/outline';
+import Link from 'next/link';
 
 export default function Home() {
   return (
@@ -11,11 +11,11 @@ export default function Home() {
         </p>
       </div>
       <Link
-            href="/login"
-            className="flex items-center gap-5 mt-4 self-start rounded-lg bg-primary px-6 py-3 text-sm font-medium text-lightGreen transition-colors hover:bg-secondary md:text-base"
-          >
-            <span>Log in</span> <ArrowRightIcon className="w-5 md:w-6" />
-          </Link>
+        href="/login"
+        className="mt-4 flex items-center gap-5 self-start rounded-lg bg-primary px-6 py-3 text-sm font-medium text-lightGreen transition-colors hover:bg-secondary md:text-base"
+      >
+        <span>Log in</span> <ArrowRightIcon className="w-5 md:w-6" />
+      </Link>
     </main>
   );
 }

@@ -1,5 +1,5 @@
-import MobileNav from "@/components/layout/mobile-nav";
-import DesktopNav from "@/components/layout/desktop-nav";
+import MobileNav from '@/components/layout/mobile-nav';
+import DesktopNav from '@/components/layout/desktop-nav';
 
 export default function ProfileLayout({
   children,
@@ -13,4 +13,4 @@ export default function ProfileLayout({
       <MobileNav />
     </div>
   );
-} 
+}

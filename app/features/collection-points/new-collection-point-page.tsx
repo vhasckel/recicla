@@ -1,25 +1,28 @@
 'use client';
 
-import { ArrowLeftIcon } from "@heroicons/react/24/outline";
-import { useRouter } from "next/navigation";
-import dynamic from "next/dynamic";
+import { ArrowLeftIcon } from '@heroicons/react/24/outline';
+import { useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
 
-const CollectionPointForm = dynamic(() => import("@/features/collection-points/components/collection-point-form"), {
-  ssr: false,
-});
+const CollectionPointForm = dynamic(
+  () => import('@/features/collection-points/components/collection-point-form'),
+  {
+    ssr: false,
+  }
+);
 
 export function NewCollectionPointPage() {
   const router = useRouter();
 
   return (
-    <main className="flex flex-col h-full">
-      <div className="sticky top-0 z-10 bg-white p-4 border-b">
+    <main className="flex h-full flex-col">
+      <div className="sticky top-0 z-10 border-b bg-white p-4">
         <div className="flex items-center gap-4">
           <button
             onClick={() => router.back()}
-            className="p-2 hover:bg-gray-100 rounded-full"
+            className="rounded-full p-2 hover:bg-gray-100"
           >
-            <ArrowLeftIcon className="w-6 h-6" />
+            <ArrowLeftIcon className="h-6 w-6" />
           </button>
           <h1 className="text-xl font-semibold">Cadastrar novo ponto</h1>
         </div>
@@ -29,4 +32,4 @@ export function NewCollectionPointPage() {
       </div>
     </main>
   );
-} 
+}

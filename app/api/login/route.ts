@@ -20,5 +20,8 @@ export async function POST(req: NextRequest) {
     return response;
   }
   // Se as credenciais estiverem erradas, retorna erro
-  return NextResponse.json({ message: 'Credenciais inválidas' }, { status: 401 });
-} 
+  return NextResponse.json(
+    { message: 'Credenciais inválidas' },
+    { status: 401 }
+  );
+}

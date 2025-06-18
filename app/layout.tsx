@@ -20,11 +20,13 @@ export default function RootLayout({
     <html lang="pt-BR">
       <body className={inter.className}>
         <CollectionPointsProvider>
-          <Suspense fallback={
-            <div className="flex h-screen w-full items-center justify-center bg-gray-100">
-              <p className="text-lg text-gray-600">Carregando...</p>
-            </div>
-          }>
+          <Suspense
+            fallback={
+              <div className="flex h-screen w-full items-center justify-center bg-gray-100">
+                <p className="text-lg text-gray-600">Carregando...</p>
+              </div>
+            }
+          >
             {children}
           </Suspense>
         </CollectionPointsProvider>

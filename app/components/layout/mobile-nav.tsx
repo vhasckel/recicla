@@ -1,14 +1,18 @@
-"use client";
+'use client';
 
-import { HomeIcon, UserIcon, MapPinIcon } from "@heroicons/react/24/outline";
-import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
-import clsx from "clsx";
+import { HomeIcon, UserIcon, MapPinIcon } from '@heroicons/react/24/outline';
+import Link from 'next/link';
+import { usePathname, useSearchParams } from 'next/navigation';
+import clsx from 'clsx';
 
 const links = [
-  { name: "Home", href: "/dashboard", icon: HomeIcon },
-  { name: "Pontos", href: "/dashboard?view=collection-points", icon: MapPinIcon },
-  { name: "Perfil", href: "/dashboard?view=profile", icon: UserIcon },
+  { name: 'Home', href: '/dashboard', icon: HomeIcon },
+  {
+    name: 'Pontos',
+    href: '/dashboard?view=collection-points',
+    icon: MapPinIcon,
+  },
+  { name: 'Perfil', href: '/dashboard?view=profile', icon: UserIcon },
 ];
 
 export default function MobileNav() {
@@ -20,20 +24,29 @@ export default function MobileNav() {
       <nav className="flex h-16 items-center justify-around">
         {links.map((link) => {
           const LinkIcon = link.icon;
-          const isActive = link.href === "/dashboard" ? pathname === link.href && !searchParams.get('view') : 
-                         link.href === "/dashboard?view=collection-points" ? (pathname === "/dashboard" && searchParams.get('view') === 'collection-points') || pathname === "/collection-points" || pathname === "/collection-points/new" : 
-                         link.href === "/dashboard?view=profile" ? (pathname === "/dashboard" && searchParams.get('view') === 'profile') || pathname === "/profile" :
-                         pathname.startsWith(link.href);
+          const isActive =
+            link.href === '/dashboard'
+              ? pathname === link.href && !searchParams.get('view')
+              : link.href === '/dashboard?view=collection-points'
+                ? (pathname === '/dashboard' &&
+                    searchParams.get('view') === 'collection-points') ||
+                  pathname === '/collection-points' ||
+                  pathname === '/collection-points/new'
+                : link.href === '/dashboard?view=profile'
+                  ? (pathname === '/dashboard' &&
+                      searchParams.get('view') === 'profile') ||
+                    pathname === '/profile'
+                  : pathname.startsWith(link.href);
 
           return (
             <Link
               key={link.name}
               href={link.href}
               className={clsx(
-                "flex flex-col items-center justify-center gap-1 p-2 text-sm",
+                'flex flex-col items-center justify-center gap-1 p-2 text-sm',
                 {
-                  "text-primary": isActive,
-                  "text-gray-500": !isActive,
+                  'text-primary': isActive,
+                  'text-gray-500': !isActive,
                 }
               )}
             >
@@ -45,4 +58,4 @@ export default function MobileNav() {
       </nav>
     </div>
   );
-} 
+}

@@ -12,7 +12,9 @@ import { CollectionPoint } from '@/types/collection-point';
 const MapComponent = memo(() => {
   const mapRef = useRef<LeafletMap | null>(null);
   const markerRefs = useRef<{ [key: string]: LeafletMarker }>({});
-  const [mapId] = useState(() => 'map-container-' + Math.random().toString(36).substr(2, 9));
+  const [mapId] = useState(
+    () => 'map-container-' + Math.random().toString(36).substr(2, 9)
+  );
   const searchParams = useSearchParams();
   const selectedPointId = searchParams.get('point');
 
@@ -20,7 +22,9 @@ const MapComponent = memo(() => {
   const query = useMemo(() => normalizeText(rawQuery), [rawQuery]);
 
   const { points: collectionPoints } = useCollectionPoints(query);
-  const [leafletInstance, setLeafletInstance] = useState<typeof import('leaflet') | null>(null);
+  const [leafletInstance, setLeafletInstance] = useState<
+    typeof import('leaflet') | null
+  >(null);
 
   // 1. Effect for map initialization (runs once, or when mapId changes) - Creates the map instance
   useEffect(() => {
@@ -49,11 +53,11 @@ const MapComponent = memo(() => {
           boxZoom: true,
           keyboard: true,
           inertia: true,
-        }).setView([-27.5954, -48.5480], 12);
-        
+        }).setView([-27.5954, -48.548], 12);
+
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
           attribution: '&copy; OpenStreetMap contributors',
-          crossOrigin: true
+          crossOrigin: true,
         }).addTo(mapInstance);
 
         mapRef.current = mapInstance;
@@ -83,29 +87,36 @@ const MapComponent = memo(() => {
     const L = leafletInstance;
 
     // 1. Update map center and zoom
-    const selectedPoint = selectedPointId 
-      ? collectionPoints.find((point: CollectionPoint) => point.id === selectedPointId) ?? null
+    const selectedPoint = selectedPointId
+      ? (collectionPoints.find(
+          (point: CollectionPoint) => point.id === selectedPointId
+        ) ?? null)
       : null;
-    
-    const center: [number, number] = selectedPoint ? [selectedPoint.lat, selectedPoint.lng] : [-27.5954, -48.5480];
+
+    const center: [number, number] = selectedPoint
+      ? [selectedPoint.lat, selectedPoint.lng]
+      : [-27.5954, -48.548];
     const zoom = selectedPoint ? 15 : 12;
 
     // Only set view if it's actually different
     const currentCenter = mapInstance.getCenter();
     const currentZoom = mapInstance.getZoom();
-    const isCenterChanged = currentCenter.lat !== center[0] || currentCenter.lng !== center[1];
+    const isCenterChanged =
+      currentCenter.lat !== center[0] || currentCenter.lng !== center[1];
     const isZoomChanged = currentZoom !== zoom;
 
     if (isCenterChanged || isZoomChanged) {
-        mapInstance.setView(center, zoom, { animate: true });
+      mapInstance.setView(center, zoom, { animate: true });
     }
 
     // 2. Update markers
-    const newMarkerIds = new Set(collectionPoints.map((p: CollectionPoint) => p.id));
+    const newMarkerIds = new Set(
+      collectionPoints.map((p: CollectionPoint) => p.id)
+    );
     const oldMarkerIds = new Set(Object.keys(markerRefs.current));
 
     // Remove markers that are no longer in collectionPoints
-    oldMarkerIds.forEach(id => {
+    oldMarkerIds.forEach((id) => {
       if (!newMarkerIds.has(id)) {
         mapInstance.removeLayer(markerRefs.current[id]);
         delete markerRefs.current[id];
@@ -127,9 +138,9 @@ const MapComponent = memo(() => {
     // Add or update markers for all points
     collectionPoints.forEach((point: CollectionPoint) => {
       if (!markerRefs.current[point.id]) {
-        const marker = L.marker([point.lat, point.lng], { icon: customIcon })
-          .addTo(mapInstance)
-          .bindPopup(`
+        const marker = L.marker([point.lat, point.lng], {
+          icon: customIcon,
+        }).addTo(mapInstance).bindPopup(`
             <div class="">
               <h3 class="font-bold text-lg">${point.neighborhood}</h3>
               <p class="text-sm">${point.street}${point.number ? `, ${point.number}` : ''}</p>
@@ -162,11 +173,10 @@ const MapComponent = memo(() => {
     });
 
     mapInstance.invalidateSize();
-
   }, [selectedPointId, collectionPoints, leafletInstance]);
 
   return (
-    <div className="h-full w-full min-h-[400px]">
+    <div className="h-full min-h-[400px] w-full">
       <div id={mapId} className="h-full w-full" />
     </div>
   );

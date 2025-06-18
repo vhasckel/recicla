@@ -1,23 +1,32 @@
-'use client'
+'use client';
 
-import { Button } from "@/components/common/button"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import dynamic from "next/dynamic";
+import { Button } from '@/components/common/button';
+import Link from 'next/link';
+import dynamic from 'next/dynamic';
 
-const CollectionPointsWrapper = dynamic(() => import("@/features/collection-points/components/collection-points-wrapper").then(mod => mod.CollectionPointsWrapper), {
-  ssr: false,
-});
-const SearchWrapper = dynamic(() => import("@/features/collection-points/components/search-wrapper").then(mod => mod.SearchWrapper), {
-  ssr: false,
-});
+const CollectionPointsWrapper = dynamic(
+  () =>
+    import(
+      '@/features/collection-points/components/collection-points-wrapper'
+    ).then((mod) => mod.CollectionPointsWrapper),
+  {
+    ssr: false,
+  }
+);
+const SearchWrapper = dynamic(
+  () =>
+    import('@/features/collection-points/components/search-wrapper').then(
+      (mod) => mod.SearchWrapper
+    ),
+  {
+    ssr: false,
+  }
+);
 
 export function CollectionPointsPage() {
-  const router = useRouter()
-
   return (
-    <main className="flex flex-col h-full">
-      <div className="sticky top-0 z-10 bg-white p-4 border-b">
+    <main className="flex h-full flex-col">
+      <div className="sticky top-0 z-10 border-b bg-white p-4">
         <div className="flex items-center gap-4">
           <h1 className="text-xl font-semibold">Pontos de Coleta</h1>
         </div>
@@ -36,5 +45,5 @@ export function CollectionPointsPage() {
         <CollectionPointsWrapper />
       </div>
     </main>
-  )
-} 
+  );
+}

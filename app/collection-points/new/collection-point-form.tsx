@@ -52,7 +52,7 @@ export default function CollectionPointForm() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   // O array de dependências vazio [] garante que ele só executa na montagem do componente.
@@ -61,10 +61,14 @@ export default function CollectionPointForm() {
     const initialMaterials = searchParams.get('materials');
 
     if (initialCep || initialMaterials) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        cep: initialCep ? initialCep.replace(/\D/g, '').substring(0, 8) : prev.cep,
-        materials: initialMaterials ? initialMaterials.split(',') : prev.materials,
+        cep: initialCep
+          ? initialCep.replace(/\D/g, '').substring(0, 8)
+          : prev.cep,
+        materials: initialMaterials
+          ? initialMaterials.split(',')
+          : prev.materials,
       }));
     }
   }, []);
@@ -82,7 +86,7 @@ export default function CollectionPointForm() {
       const addressData = await fetchAddressByCep(formData.cep);
 
       if (addressData) {
-        setFormData(prev => ({
+        setFormData((prev) => ({
           ...prev,
           city: addressData.localidade || '',
           neighborhood: addressData.bairro || '',
@@ -100,7 +104,6 @@ export default function CollectionPointForm() {
     };
   }, [formData.cep]);
 
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isSubmitting) return;
@@ -109,8 +112,15 @@ export default function CollectionPointForm() {
     setError('');
     setSuccess('');
 
-    if (!formData.cep || !formData.city || !formData.street || formData.materials.length === 0) {
-      setError('Preencha todos os campos obrigatórios e selecione ao menos um material.');
+    if (
+      !formData.cep ||
+      !formData.city ||
+      !formData.street ||
+      formData.materials.length === 0
+    ) {
+      setError(
+        'Preencha todos os campos obrigatórios e selecione ao menos um material.'
+      );
       setIsSubmitting(false);
       return;
     }
@@ -119,7 +129,9 @@ export default function CollectionPointForm() {
     const coords = await geocodeAddress(fullAddressString);
 
     if (!coords) {
-      setError('Não foi possível encontrar as coordenadas para o endereço. Verifique os dados.');
+      setError(
+        'Não foi possível encontrar as coordenadas para o endereço. Verifique os dados.'
+      );
       setIsSubmitting(false);
       return;
     }
@@ -139,16 +151,21 @@ export default function CollectionPointForm() {
 
     addCollectionPoint(newPoint);
     setSuccess('Ponto cadastrado com sucesso! Redirecionando...');
-    
+
     setTimeout(() => {
       router.push('/collection-points');
     }, 2000);
   };
 
   return (
-    <main className="flex flex-col items-center w-full p-4">
-      <h1 className="text-2xl font-bold mb-4">Cadastrar novo ponto de coleta</h1>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full max-w-md bg-white p-6 rounded-lg shadow-md">
+    <main className="flex w-full flex-col items-center p-4">
+      <h1 className="mb-4 text-2xl font-bold">
+        Cadastrar novo ponto de coleta
+      </h1>
+      <form
+        onSubmit={handleSubmit}
+        className="flex w-full max-w-md flex-col gap-4 rounded-lg bg-white p-6 shadow-md"
+      >
         <FormField
           id="cep"
           name="cep"
@@ -158,20 +175,58 @@ export default function CollectionPointForm() {
           onChange={handleInputChange}
           required
         />
-        {loadingCep && <p className="text-blue-500 text-sm">Buscando endereço...</p>}
-        {cepError && <p className="text-red-500 text-sm">{cepError}</p>}
-        
-        <FormField id="city" name="city" type="text" placeholder="Cidade" value={formData.city} onChange={handleInputChange} required />
-        <FormField id="neighborhood" name="neighborhood" type="text" placeholder="Bairro" value={formData.neighborhood} onChange={handleInputChange} required />
-        <FormField id="street" name="street" type="text" placeholder="Rua" value={formData.street} onChange={handleInputChange} required />
-        <FormField id="number" name="number" type="text" placeholder="Número (opcional)" value={formData.number} onChange={handleInputChange} />
-        
-        <label htmlFor="materials" className="block text-sm font-medium text-gray-700 -mb-2">
+        {loadingCep && (
+          <p className="text-sm text-blue-500">Buscando endereço...</p>
+        )}
+        {cepError && <p className="text-sm text-red-500">{cepError}</p>}
+
+        <FormField
+          id="city"
+          name="city"
+          type="text"
+          placeholder="Cidade"
+          value={formData.city}
+          onChange={handleInputChange}
+          required
+        />
+        <FormField
+          id="neighborhood"
+          name="neighborhood"
+          type="text"
+          placeholder="Bairro"
+          value={formData.neighborhood}
+          onChange={handleInputChange}
+          required
+        />
+        <FormField
+          id="street"
+          name="street"
+          type="text"
+          placeholder="Rua"
+          value={formData.street}
+          onChange={handleInputChange}
+          required
+        />
+        <FormField
+          id="number"
+          name="number"
+          type="text"
+          placeholder="Número (opcional)"
+          value={formData.number}
+          onChange={handleInputChange}
+        />
+
+        <label
+          htmlFor="materials"
+          className="-mb-2 block text-sm font-medium text-gray-700"
+        >
           Materiais aceitos:
         </label>
         <MultiSelect
           options={AVAILABLE_MATERIALS}
-          onValueChange={(selected) => setFormData(prev => ({...prev, materials: selected}))}
+          onValueChange={(selected) =>
+            setFormData((prev) => ({ ...prev, materials: selected }))
+          }
           defaultValue={formData.materials}
           placeholder="Selecione os materiais..."
           className="w-full"
@@ -181,8 +236,8 @@ export default function CollectionPointForm() {
           {isSubmitting ? 'Cadastrando...' : 'Cadastrar Ponto'}
         </Button>
 
-        {success && <p className="text-green-600 text-center">{success}</p>}
-        {error && <p className="text-red-600 text-center">{error}</p>}
+        {success && <p className="text-center text-green-600">{success}</p>}
+        {error && <p className="text-center text-red-600">{error}</p>}
       </form>
     </main>
   );

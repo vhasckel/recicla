@@ -1,7 +1,7 @@
-import { Badge } from "@/components/ui/badge";
-import { XCircle } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { multiSelectVariants } from "./multi-select";
+import { Badge } from '@/components/ui/badge';
+import { XCircle } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { multiSelectVariants } from './multi-select';
 
 interface SelectedBadgesProps {
   selectedValues: string[];
@@ -37,12 +37,18 @@ export function SelectedBadges({
           <Badge
             key={value}
             className={cn(
-              isAnimating ? "animate-bounce" : "",
-              multiSelectVariants({ variant: variant as "default" | "secondary" | "destructive" | "inverted" })
+              isAnimating ? 'animate-bounce' : '',
+              multiSelectVariants({
+                variant: variant as
+                  | 'default'
+                  | 'secondary'
+                  | 'destructive'
+                  | 'inverted',
+              })
             )}
             style={{ animationDuration: `${animation}s` }}
           >
-            {IconComponent && <IconComponent className="h-4 w-4 mr-2" />}
+            {IconComponent && <IconComponent className="mr-2 h-4 w-4" />}
             {option?.label}
             <XCircle
               className="ml-2 h-4 w-4 cursor-pointer"
@@ -58,9 +64,15 @@ export function SelectedBadges({
       {selectedValues.length > maxCount && (
         <Badge
           className={cn(
-            "bg-transparent text-foreground border-foreground/1 hover:bg-transparent",
-            isAnimating ? "animate-bounce" : "",
-            multiSelectVariants({ variant: variant as "default" | "secondary" | "destructive" | "inverted" })
+            'border-foreground/1 bg-transparent text-foreground hover:bg-transparent',
+            isAnimating ? 'animate-bounce' : '',
+            multiSelectVariants({
+              variant: variant as
+                | 'default'
+                | 'secondary'
+                | 'destructive'
+                | 'inverted',
+            })
           )}
           style={{ animationDuration: `${animation}s` }}
         >
@@ -77,4 +89,4 @@ export function SelectedBadges({
       )}
     </>
   );
-} 
+}

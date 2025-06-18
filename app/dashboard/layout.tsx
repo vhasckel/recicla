@@ -1,6 +1,6 @@
-import MobileNav from "@/components/layout/mobile-nav";
-import Header from "@/components/layout/header";
-import DesktopNav from "@/components/layout/desktop-nav";
+import MobileNav from '@/components/layout/mobile-nav';
+import Header from '@/components/layout/header';
+import DesktopNav from '@/components/layout/desktop-nav';
 
 export default function DashboardLayout({
   children,
@@ -15,4 +15,4 @@ export default function DashboardLayout({
       <MobileNav />
     </div>
   );
-} 
+}
