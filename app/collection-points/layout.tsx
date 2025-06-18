@@ -1,5 +1,5 @@
-import MobileNav from '@/components/layout/mobile-nav';
-import DesktopNav from '@/components/layout/desktop-nav';
+import { MobileNav } from '@/components/layout/mobile-nav';
+import { DesktopNav } from '@/components/layout/desktop-nav';
 
 export default function CollectionPointsLayout({
   children,
@@ -8,8 +8,10 @@ export default function CollectionPointsLayout({
 }) {
   return (
     <div className="flex h-screen flex-col">
-      <DesktopNav />
-      <div className="flex-1">{children}</div>
+      <div className="flex flex-1 pt-16">
+        <DesktopNav />
+        <main className="flex-1">{children}</main>
+      </div>
       <MobileNav />
     </div>
   );
