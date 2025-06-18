@@ -13,7 +13,7 @@ const SearchWrapper = dynamic(() => import("@/features/collection-points/compone
   ssr: false,
 });
 
-export default function CollectionPointsPage() {
+function CollectionPointsPageInner() {
   const router = useRouter()
 
   return (
@@ -23,9 +23,7 @@ export default function CollectionPointsPage() {
           <h1 className="text-xl font-semibold">Pontos de Coleta</h1>
         </div>
         <div className="mt-4">
-          <Suspense fallback={<div>Carregando busca...</div>}>
-            <SearchWrapper />
-          </Suspense>
+          <SearchWrapper />
         </div>
         <div className="mt-4">
           <Link href="/collection-points/new" className="w-full">
@@ -36,10 +34,20 @@ export default function CollectionPointsPage() {
         </div>
       </div>
       <div className="flex-1 overflow-y-auto p-4">
-        <Suspense fallback={<div>Carregando pontos de coleta...</div>}>
-          <CollectionPointsWrapper />
-        </Suspense>
+        <CollectionPointsWrapper />
       </div>
     </main>
   )
+}
+
+export default function CollectionPointsPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex h-screen w-full items-center justify-center bg-gray-100">
+        <p className="text-lg text-gray-600">Carregando...</p>
+      </div>
+    }>
+      <CollectionPointsPageInner />
+    </Suspense>
+  );
 } 

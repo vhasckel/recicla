@@ -9,7 +9,7 @@ const CollectionPointForm = dynamic(() => import("@/features/collection-points/c
   ssr: false,
 });
 
-export default function NewCollectionPointPage() {
+function NewCollectionPointPageInner() {
   const router = useRouter();
 
   return (
@@ -26,10 +26,20 @@ export default function NewCollectionPointPage() {
         </div>
       </div>
       <div className="flex-1 overflow-y-auto p-4">
-        <Suspense fallback={<div className="text-center p-8">Carregando formulário...</div>}>
-          <CollectionPointForm />
-        </Suspense>
+        <CollectionPointForm />
       </div>
     </main>
+  );
+}
+
+export default function NewCollectionPointPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex h-screen w-full items-center justify-center bg-gray-100">
+        <p className="text-lg text-gray-600">Carregando...</p>
+      </div>
+    }>
+      <NewCollectionPointPageInner />
+    </Suspense>
   );
 }
