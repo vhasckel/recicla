@@ -1,5 +1,6 @@
 import { MobileNav } from '@/components/layout/mobile-nav';
 import { DesktopNav } from '@/components/layout/desktop-nav';
+import { Chatbot } from '@/components/Chatbot';
 
 export default function CollectionPointsLayout({
   children,
@@ -10,7 +11,10 @@ export default function CollectionPointsLayout({
     <div className="flex h-screen flex-col">
       <div className="flex flex-1 pt-16">
         <DesktopNav />
-        <main className="flex-1">{children}</main>
+        <main className="flex-1">
+          {children}
+          <Chatbot />
+        </main>
       </div>
       <MobileNav />
     </div>

@@ -2,6 +2,7 @@ import { Suspense } from 'react';
 import { DesktopNav } from '@/components/layout/desktop-nav';
 import { MobileNav } from '@/components/layout/mobile-nav';
 import Header from '@/components/layout/header';
+import { Chatbot } from '@/components/Chatbot';
 
 export default function DashboardLayout({
   children,
@@ -13,7 +14,10 @@ export default function DashboardLayout({
       <Header />
       <div className="flex flex-1 pt-16">
         <DesktopNav />
-        <main className="flex-1">{children}</main>
+        <main className="flex-1">
+          {children}
+          <Chatbot />
+        </main>
       </div>
       <MobileNav />
     </div>
