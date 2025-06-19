@@ -1,6 +1,6 @@
 import { MobileNav } from '@/components/layout/mobile-nav';
 import { DesktopNav } from '@/components/layout/desktop-nav';
-import { Chatbot } from '@/components/Chatbot';
+import { Chatbot } from '@/components/features/chatbot/chatbot';
 
 export default function ProfileLayout({
   children,

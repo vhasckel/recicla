@@ -2,13 +2,13 @@
 
 import { AtSymbolIcon, KeyIcon } from '@heroicons/react/24/outline';
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
-import { Button } from '@/components/common/button';
-import { FormField } from '@/components/common/form-field';
 import { useRouter } from 'next/navigation';
 import { useForm } from '@/hooks/useForm';
 import { LoginFormData } from '@/types/forms';
 import Link from 'next/link';
 import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { FormField } from '@/components/ui/form-field';
 
 export default function LoginForm(): JSX.Element {
   const router = useRouter();

@@ -9,7 +9,7 @@ import {
 import { CollectionPointsList } from '@/components/features/collection-points/components/list';
 import { useSearchParams } from 'next/navigation';
 import { SearchWrapper } from '@/components/features/collection-points/components/search-wrapper';
-import { Button } from '@/components/common/button';
+import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import CollectionPointForm from '@/components/features/collection-points/components/collection-point-form';
 import { Suspense, useEffect, useState } from 'react';

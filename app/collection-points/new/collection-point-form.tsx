@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Button } from '@/components/common/button';
+import { Button } from '@/components/ui/button';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { FormField } from '@/components/common/form-field';
-import { MultiSelect } from '@/components/multi-select';
+import { FormField } from '@/components/ui/form-field';
+import { MultiSelect } from '@/components/multi-select/multi-select';
 import { CollectionPoint } from '@/types/collection-point';
 import { geocodeAddress } from '@/lib/geocoding';
 import { fetchAddressByCep } from '@/lib/viacep';

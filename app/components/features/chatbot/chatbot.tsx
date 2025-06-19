@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
-import { ChatWindow } from './features/chatbot/chat-window';
+import { ChatWindow } from '../../chatbot/chat-window';
 
 interface Message {
   id: string;

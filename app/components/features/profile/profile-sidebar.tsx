@@ -6,7 +6,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
-import { Button } from '@/components/common/button';
+import { Button } from '@/components/ui/button';
 import { ImpactMetricProps } from '@/types/impact-metric';
 import {
   ArrowLeftStartOnRectangleIcon,

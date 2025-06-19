@@ -1,4 +1,4 @@
-import Input from '@/components/common/input';
+import Input from '@/components/ui/input';
 import { FormFieldProps } from '@/types/forms';
 
 export function FormField({
