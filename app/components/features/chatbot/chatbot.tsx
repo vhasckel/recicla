@@ -40,17 +40,38 @@ export function Chatbot() {
     setMessages((prev) => [...prev, userMessage]);
     setInput('');
 
-    // Simulação de resposta do assistente
-    const assistantMessage: Message = {
-      id: (Date.now() + 1).toString(),
-      content: `Echo: ${input}`,
-      role: 'assistant',
-      timestamp: new Date(),
-    };
+    try {
+      // Chamada ao backend Flask
+      const response = await fetch(
+        'https://recicla-backend.onrender.com/api/gemini',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ prompt: input }),
+        }
+      );
 
-    setTimeout(() => {
+      const data = await response.json();
+
+      const assistantMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        content: data.response || 'Erro ao obter resposta da IA.',
+        role: 'assistant',
+        timestamp: new Date(),
+      };
+
       setMessages((prev) => [...prev, assistantMessage]);
-    }, 1000);
+    } catch (error) {
+      const assistantMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        content: 'Erro ao conectar com o assistente.',
+        role: 'assistant',
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, assistantMessage]);
+    }
   };
 
   return (
