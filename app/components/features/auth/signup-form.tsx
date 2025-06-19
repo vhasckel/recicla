@@ -1,7 +1,7 @@
 'use client';
 
-import { Button } from '@/components/common/button';
-import { FormField } from '@/components/common/form-field';
+import { Button } from '@/components/ui/button';
+import { FormField } from '@/components/ui/form-field';
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import { useForm } from '@/hooks/useForm';
 import { SignupFormData } from '@/types/forms';
