@@ -40,9 +40,7 @@ export function CollectionPointsPage() {
           <h1 className="text-xl font-semibold">Pontos de Coleta</h1>
         </div>
         <div className="mt-4">
-          <SearchWrapper>
-            <CollectionPointsWrapper />
-          </SearchWrapper>
+          <SearchWrapper />
         </div>
         <div className="mt-4">
           <Link href="/collection-points/new" className="w-full">
