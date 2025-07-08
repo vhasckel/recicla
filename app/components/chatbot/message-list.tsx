@@ -1,12 +1,6 @@
 import React, { RefObject } from 'react';
 import { MessageBubble } from './message-bubble';
-
-interface Message {
-  id: string;
-  content: string;
-  role: 'user' | 'assistant';
-  timestamp: Date;
-}
+import { Message } from '@/types/message';
 
 interface MessageListProps {
   messages: Message[];
@@ -22,6 +16,7 @@ export function MessageList({ messages, messagesEndRef }: MessageListProps) {
           id={message.id}
           content={message.content}
           role={message.role}
+          timestamp={message.timestamp}
         />
       ))}
       <div ref={messagesEndRef} />

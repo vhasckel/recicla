@@ -1,11 +1,8 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
+import { Message } from '@/types/message';
 
-interface MessageBubbleProps {
-  content: string;
-  role: 'user' | 'assistant';
-  id?: string;
-}
+interface MessageBubbleProps extends Message {}
 
 export function MessageBubble({ content, role, id }: MessageBubbleProps) {
   if (id === 'typing') {

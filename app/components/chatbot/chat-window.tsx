@@ -2,13 +2,7 @@ import React, { RefObject } from 'react';
 import { ChatHeader } from './chat-header';
 import { MessageList } from './message-list';
 import { ChatInput } from './chat-input';
-
-interface Message {
-  id: string;
-  content: string;
-  role: 'user' | 'assistant';
-  timestamp: Date;
-}
+import { Message } from '@/types/message';
 
 interface ChatWindowProps {
   isMobile: boolean;
@@ -18,6 +12,7 @@ interface ChatWindowProps {
   setInput: (value: string) => void;
   onSubmit: (e: React.FormEvent) => void;
   onClose: () => void;
+  isSubmitting: boolean;
 }
 
 export function ChatWindow({
