@@ -19,6 +19,7 @@ export function MessageList({ messages, messagesEndRef }: MessageListProps) {
       {messages.map((message) => (
         <MessageBubble
           key={message.id}
+          id={message.id}
           content={message.content}
           role={message.role}
         />

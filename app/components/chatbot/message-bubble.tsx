@@ -1,23 +1,40 @@
 import React from 'react';
+import ReactMarkdown from 'react-markdown';
 
 interface MessageBubbleProps {
   content: string;
   role: 'user' | 'assistant';
+  id?: string;
 }
 
-export function MessageBubble({ content, role }: MessageBubbleProps) {
+export function MessageBubble({ content, role, id }: MessageBubbleProps) {
+  if (id === 'typing') {
+    return (
+      <div className="flex justify-start">
+        <div className="max-w-[80%] rounded-lg bg-gray-100 p-3 text-gray-800">
+          <span className="flex gap-1">
+            <span className="typing-dot h-2 w-2 rounded-full bg-gray-400"></span>
+            <span className="typing-dot h-2 w-2 rounded-full bg-gray-400"></span>
+            <span className="typing-dot h-2 w-2 rounded-full bg-gray-400"></span>
+          </span>
+        </div>
+      </div>
+    );
+  }
   return (
     <div
-      className={`flex ${role === 'user' ? 'justify-end' : 'justify-start'}`}
+      className={`flex ${
+        role === 'user' ? 'justify-end' : 'justify-start'
+      } animate-bubble-in`}
     >
       <div
-        className={`max-w-[80%] rounded-lg p-3 ${
+        className={`prose max-w-[80%] rounded-lg p-3 text-sm ${
           role === 'user'
-            ? 'bg-primary text-white'
+            ? 'prose-invert bg-primary text-white'
             : 'bg-gray-100 text-gray-800'
         }`}
       >
-        {content}
+        <ReactMarkdown>{content}</ReactMarkdown>
       </div>
     </div>
   );
