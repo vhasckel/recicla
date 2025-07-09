@@ -4,23 +4,20 @@ import { useState, useRef, useEffect } from 'react';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { useChat } from '@/hooks/useChat';
 import { ChatWindow } from '../../chatbot/chat-window';
-
-interface UserLocation {
-  lat: number;
-  lng: number;
-}
+import { useUserLocation } from '@/hooks/useUserLocation';
 
 export function Chatbot() {
   const isMobile = useMediaQuery('(max-width: 768px)');
   const [isOpen, setIsOpen] = useState(false);
-  const [userLocation, setUserLocation] = useState<UserLocation | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const sessionIdRef = useRef(crypto.randomUUID());
 
-  const [sessionId] = useState(() => crypto.randomUUID());
+  const { location: userLocation, error: locationError } =
+    useUserLocation(isOpen);
 
   const { messages, input, setInput, isSubmitting, handleSubmit } = useChat(
-    sessionId,
-    userLocation || undefined
+    sessionIdRef.current,
+    userLocation ?? undefined
   );
 
   useEffect(() => {
@@ -28,23 +25,10 @@ export function Chatbot() {
   }, [messages]);
 
   useEffect(() => {
-    if (!isOpen || userLocation) return;
-    let isMounted = true;
-    navigator.geolocation?.getCurrentPosition(
-      (position) => {
-        if (isMounted) {
-          setUserLocation({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          });
-        }
-      },
-      (error) => console.error('Erro ao obter localização:', error)
-    );
-    return () => {
-      isMounted = false;
-    };
-  }, [isOpen, userLocation]);
+    if (locationError) {
+      console.log('Não foi possível obter a localização para o chat.');
+    }
+  }, [locationError]);
 
   return (
     <>
@@ -54,7 +38,6 @@ export function Chatbot() {
           className="fixed bottom-20 right-4 z-50 rounded-full bg-primary p-4 text-white shadow-lg transition-colors"
           aria-label="Abrir chat"
         >
-          {/* SVG Icon */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-6 w-6"
