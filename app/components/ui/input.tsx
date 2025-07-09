@@ -12,7 +12,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         <input
           ref={ref}
           className={twMerge(
-            'w-full rounded-lg border border-gray-300 px-4 py-2 transition-colors focus:border-transparent focus:outline-none focus:ring-2 focus:ring-green-500',
+            'peer my-2 w-full gap-2 rounded-lg border-gray-300 py-2 pl-10 pr-4 transition-colors focus:border-transparent focus:outline-none focus:ring-2 focus:ring-green-500',
             error && 'border-red-500 focus:ring-red-500',
             className
           )}

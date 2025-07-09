@@ -2,75 +2,20 @@
 
 import { AtSymbolIcon, KeyIcon } from '@heroicons/react/24/outline';
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
-import { useRouter } from 'next/navigation';
-import { useForm } from '@/hooks/useForm';
-import { LoginFormData } from '@/types/forms';
 import Link from 'next/link';
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { FormField } from '@/components/ui/form-field';
+import { useLogin } from '@/hooks/useLogin';
 
 export default function LoginForm(): JSX.Element {
-  const router = useRouter();
-  const { formData, errors, handleChange, validateField, setFieldError } =
-    useForm<LoginFormData>({
-      email: '',
-      password: '',
-    });
-  const [successMessage, setSuccessMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-
-  const validateEmail = (value: string) => {
-    if (!value) return 'Email é obrigatório';
-    if (!value.includes('@')) return 'Email inválido';
-    return undefined;
-  };
-
-  const validatePassword = (value: string) => {
-    if (!value) return 'Senha é obrigatória';
-    if (value.length < 6) return 'A senha deve ter pelo menos 6 caracteres';
-    return undefined;
-  };
-
-  const handleSubmit = async (
-    e: React.FormEvent<HTMLFormElement>
-  ): Promise<void> => {
-    e.preventDefault();
-
-    const isEmailValid = validateField('email', validateEmail);
-    const isPasswordValid = validateField('password', validatePassword);
-
-    if (isEmailValid && isPasswordValid) {
-      try {
-        const response = await fetch('/api/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setSuccessMessage(data.message || 'Login bem-sucedido!');
-          setErrorMessage(''); // Limpa qualquer erro anterior
-          router.push('/dashboard'); // Redireciona para o dashboard
-        } else {
-          const errorData = await response.json();
-          setErrorMessage(
-            errorData.message || 'Erro ao fazer login. Credenciais inválidas.'
-          );
-          setSuccessMessage(''); // Limpa qualquer mensagem de sucesso anterior
-        }
-      } catch (error) {
-        console.error('Erro ao enviar formulário de login:', error);
-        setErrorMessage(
-          'Erro de conexão. Verifique sua rede e tente novamente.'
-        );
-        setSuccessMessage('');
-      }
-    }
-  };
+  const {
+    formData,
+    errors,
+    apiError,
+    isSubmitting,
+    handleChange,
+    handleSubmit,
+  } = useLogin();
 
   const formFields = [
     {
@@ -78,7 +23,6 @@ export default function LoginForm(): JSX.Element {
       type: 'email',
       name: 'email',
       placeholder: 'Seu endereço de email',
-      required: true,
       value: formData.email,
       error: errors.email,
       icon: <AtSymbolIcon />,
@@ -88,8 +32,6 @@ export default function LoginForm(): JSX.Element {
       type: 'password',
       name: 'password',
       placeholder: 'Entre com sua senha',
-      required: true,
-      minLength: 6,
       value: formData.password,
       error: errors.password,
       icon: <KeyIcon />,
@@ -102,18 +44,23 @@ export default function LoginForm(): JSX.Element {
         <h1 className="mb-3 text-2xl">Faça login para continuar.</h1>
         <div className="w-full">
           {formFields.map((field) => (
-            <FormField key={field.id} {...field} onChange={handleChange} />
+            <FormField
+              key={field.id}
+              {...field}
+              onChange={handleChange}
+              disabled={isSubmitting}
+              required
+            />
           ))}
         </div>
-        {successMessage && (
-          <p className="text-center text-green-500">{successMessage}</p>
+
+        {apiError && (
+          <p className="mt-2 text-center text-sm text-red-500">{apiError}</p>
         )}
-        {errorMessage && (
-          <p className="text-center text-red-500">{errorMessage}</p>
-        )}
-        <input type="hidden" name="redirectTo" />
-        <Button className="mt-4 w-full" type="submit">
-          Log in <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+
+        <Button className="mt-4 w-full" type="submit" disabled={isSubmitting}>
+          {isSubmitting ? 'Entrando...' : 'Log in'}
+          {!isSubmitting && <ArrowRightIcon className="ml-auto h-5 w-5" />}
         </Button>
         <div className="flex h-8 items-end">
           <Link href="/signup" className="flex w-full justify-center gap-2">

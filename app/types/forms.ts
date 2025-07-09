@@ -30,4 +30,5 @@ export interface FormFieldProps {
   icon?: ReactNode;
   className?: string;
   containerClassName?: string;
+  disabled?: boolean;
 }
