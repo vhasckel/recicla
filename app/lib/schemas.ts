@@ -34,5 +34,25 @@ export const loginSchema = z.object({
   password: z.string().min(1, { message: 'A senha é obrigatória.' }),
 });
 
+export const collectionPointSchema = z.object({
+  cep: z
+    .string()
+    .transform((cep) => cep.replace(/\D/g, ''))
+    .pipe(z.string().length(8, { message: 'O CEP deve conter 8 dígitos.' })),
+
+  city: z.string().min(1, { message: 'A cidade é obrigatória.' }),
+
+  neighborhood: z.string().min(1, { message: 'O bairro é obrigatório.' }),
+
+  street: z.string().min(1, { message: 'A rua é obrigatória.' }),
+
+  number: z.string().optional(),
+
+  materials: z
+    .array(z.string())
+    .min(1, { message: 'Selecione pelo menos um material.' }),
+});
+
 export type SignupFormData = z.infer<typeof signupSchema>;
 export type LoginFormData = z.infer<typeof loginSchema>;
+export type CollectionPointFormData = z.infer<typeof collectionPointSchema>;

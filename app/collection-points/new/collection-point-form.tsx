@@ -1,161 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { useRouter, useSearchParams } from 'next/navigation';
 import { FormField } from '@/components/ui/form-field';
 import { MultiSelect } from '@/components/multi-select/multi-select';
-import { CollectionPoint } from '@/types/collection-point';
-import { geocodeAddress } from '@/lib/geocoding';
-import { fetchAddressByCep } from '@/lib/viacep';
-import { useCollectionPoints } from '@/contexts/CollectionPointsContext';
-
-const AVAILABLE_MATERIALS = [
-  { value: 'Plástico', label: 'Plástico' },
-  { value: 'Papel', label: 'Papel' },
-  { value: 'Vidro', label: 'Vidro' },
-  { value: 'Metal', label: 'Metal' },
-  { value: 'Orgânico', label: 'Orgânico' },
-  { value: 'Eletrônicos', label: 'Eletrônicos' },
-  { value: 'Óleo de Cozinha', label: 'Óleo de Cozinha' },
-];
-
-interface FormData {
-  cep: string;
-  city: string;
-  neighborhood: string;
-  street: string;
-  number: string;
-  materials: string[];
-}
+import { useCollectionPointForm } from '@/hooks/useCollectionPointForm';
+import { AVAILABLE_MATERIALS } from '@/constants/materials';
 
 export default function CollectionPointForm() {
-  const searchParams = useSearchParams();
-
-  const [formData, setFormData] = useState<FormData>({
-    cep: '',
-    city: '',
-    neighborhood: '',
-    street: '',
-    number: '',
-    materials: [],
-  });
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [loadingCep, setLoadingCep] = useState(false);
-  const [error, setError] = useState('');
-  const [cepError, setCepError] = useState('');
-  const [success, setSuccess] = useState('');
-
-  const router = useRouter();
-  const { addCollectionPoint } = useCollectionPoints();
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  // O array de dependências vazio [] garante que ele só executa na montagem do componente.
-  useEffect(() => {
-    const initialCep = searchParams.get('cep');
-    const initialMaterials = searchParams.get('materials');
-
-    if (initialCep || initialMaterials) {
-      setFormData((prev) => ({
-        ...prev,
-        cep: initialCep
-          ? initialCep.replace(/\D/g, '').substring(0, 8)
-          : prev.cep,
-        materials: initialMaterials
-          ? initialMaterials.split(',')
-          : prev.materials,
-      }));
-    }
-  }, []);
-
-  // A dependência [formData.cep] garante a re-execução quando o usuário digita.
-  useEffect(() => {
-    if (formData.cep.length !== 8) {
-      setCepError('');
-      return;
-    }
-
-    const handler = setTimeout(async () => {
-      setLoadingCep(true);
-      setCepError('');
-      const addressData = await fetchAddressByCep(formData.cep);
-
-      if (addressData) {
-        setFormData((prev) => ({
-          ...prev,
-          city: addressData.localidade || '',
-          neighborhood: addressData.bairro || '',
-          street: addressData.logradouro || '',
-        }));
-      } else {
-        setCepError('CEP não encontrado.');
-      }
-      setLoadingCep(false);
-    }, 800);
-
-    // Função de limpeza: cancela o timeout anterior se o usuário digitar novamente
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [formData.cep]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (isSubmitting) return;
-
-    setIsSubmitting(true);
-    setError('');
-    setSuccess('');
-
-    if (
-      !formData.cep ||
-      !formData.city ||
-      !formData.street ||
-      formData.materials.length === 0
-    ) {
-      setError(
-        'Preencha todos os campos obrigatórios e selecione ao menos um material.'
-      );
-      setIsSubmitting(false);
-      return;
-    }
-
-    const fullAddressString = `${formData.number ? formData.number + ', ' : ''}${formData.street}, ${formData.neighborhood}, ${formData.city}, ${formData.cep}`;
-    const coords = await geocodeAddress(fullAddressString);
-
-    if (!coords) {
-      setError(
-        'Não foi possível encontrar as coordenadas para o endereço. Verifique os dados.'
-      );
-      setIsSubmitting(false);
-      return;
-    }
-
-    const newPoint: CollectionPoint = {
-      id: Date.now().toString(),
-      name: `Ponto em ${formData.neighborhood}`,
-      lat: coords.lat,
-      lng: coords.lng,
-      materials: formData.materials,
-      cep: formData.cep,
-      city: formData.city,
-      neighborhood: formData.neighborhood,
-      street: formData.street,
-      number: formData.number || undefined,
-    };
-
-    addCollectionPoint(newPoint);
-    setSuccess('Ponto cadastrado com sucesso! Redirecionando...');
-
-    setTimeout(() => {
-      router.push('/collection-points');
-    }, 2000);
-  };
+  const { formData, state, handleInputChange, handleSubmit, setFormData } =
+    useCollectionPointForm();
 
   return (
     <main className="flex w-full flex-col items-center p-4">
@@ -175,10 +28,12 @@ export default function CollectionPointForm() {
           onChange={handleInputChange}
           required
         />
-        {loadingCep && (
+        {state.isCepLoading && (
           <p className="text-sm text-blue-500">Buscando endereço...</p>
         )}
-        {cepError && <p className="text-sm text-red-500">{cepError}</p>}
+        {state.cepError && (
+          <p className="text-sm text-red-500">{state.cepError}</p>
+        )}
 
         <FormField
           id="city"
@@ -224,20 +79,26 @@ export default function CollectionPointForm() {
         </label>
         <MultiSelect
           options={AVAILABLE_MATERIALS}
+          defaultValue={formData.materials}
+          placeholder="Selecione os materiais..."
           onValueChange={(selected) =>
             setFormData((prev) => ({ ...prev, materials: selected }))
           }
-          defaultValue={formData.materials}
-          placeholder="Selecione os materiais..."
-          className="w-full"
         />
 
-        <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Cadastrando...' : 'Cadastrar Ponto'}
+        <Button
+          type="submit"
+          disabled={state.isSubmitting || state.isCepLoading}
+        >
+          {state.isSubmitting ? 'Cadastrando...' : 'Cadastrar'}
         </Button>
 
-        {success && <p className="text-center text-green-600">{success}</p>}
-        {error && <p className="text-center text-red-600">{error}</p>}
+        {state.success && (
+          <p className="text-center text-green-600">{state.success}</p>
+        )}
+        {state.error && (
+          <p className="text-center text-red-600">{state.error}</p>
+        )}
       </form>
     </main>
   );

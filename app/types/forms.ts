@@ -32,3 +32,12 @@ export interface FormFieldProps {
   containerClassName?: string;
   disabled?: boolean;
 }
+
+export interface CollectionPointFormData {
+  cep: string;
+  city: string;
+  neighborhood: string;
+  street: string;
+  number: string;
+  materials: string[];
+}
