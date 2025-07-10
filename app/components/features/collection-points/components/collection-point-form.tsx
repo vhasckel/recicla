@@ -7,10 +7,9 @@ import { FormField } from '@/components/ui/form-field';
 import { MultiSelect } from '@/components/multi-select/multi-select';
 import { useCollectionPoints } from '@/contexts/CollectionPointsContext';
 import { CollectionPoint } from '@/types/collection-point';
-import { geocodeAddress } from '@/lib/geocoding';
-import { fetchAddressByCep } from '@/lib/viacep';
+import { geocodeAddress } from '@/lib/services';
+import { fetchAddressByCep } from '@/lib/services';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
-import { ReadonlyURLSearchParams } from 'next/navigation';
 import { AVAILABLE_MATERIALS } from '@/constants/materials';
 
 export default function CollectionPointForm() {

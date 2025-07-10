@@ -1,6 +1,6 @@
 import { User } from '@/types/user';
 import api from './api';
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 
 interface ApiErrorResponse {
   message: string;

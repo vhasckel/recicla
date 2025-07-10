@@ -1,6 +1,5 @@
 'use client';
 
-import { HomeIcon, UserIcon, MapPinIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import clsx from 'clsx';

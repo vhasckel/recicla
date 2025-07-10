@@ -4,8 +4,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { useCollectionPoints } from '@/contexts/CollectionPointsContext';
 import { CollectionPointFormData } from '@/types/forms';
 import { CollectionPoint } from '@/types/collection-point';
-import { fetchAddressByCep } from '@/lib/viacep';
-import { geocodeAddress } from '@/lib/geocoding';
+import { fetchAddressByCep } from '@/lib/services';
+import { geocodeAddress } from '@/lib/services';
 import { collectionPointSchema } from '@/lib/schemas';
 
 const CEP_DEBOUNCE_DELAY = 800;

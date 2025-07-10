@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 
 type FormErrors<T> = Partial<Record<keyof T, string>>;
 
-export function useForm<T extends Record<string, any>>(initialState: T) {
+export function useForm<T extends Record<string, unknown>>(initialState: T) {
   const [formData, setFormData] = useState<T>(initialState);
   const [errors, setErrors] = useState<FormErrors<T>>({});
 
@@ -23,7 +23,7 @@ export function useForm<T extends Record<string, any>>(initialState: T) {
   }, []);
 
   const validateField = useCallback(
-    (field: keyof T, validator: (value: any) => string | undefined) => {
+    (field: keyof T, validator: (value: T[keyof T]) => string | undefined) => {
       const error = validator(formData[field]);
       if (error) {
         setFieldError(field, error);

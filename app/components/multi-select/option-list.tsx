@@ -7,7 +7,7 @@ import {
 } from '@/components/ui/command';
 import { Separator } from '@/components/ui/separator';
 import { CheckIcon } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/utils/utils';
 import React from 'react';
 
 interface Option {

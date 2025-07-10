@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 interface CardProps {
   neighborhood: string;
@@ -34,10 +35,12 @@ export function Card({
       className="text-surface flex cursor-pointer flex-col rounded-lg bg-white shadow-secondary transition-shadow hover:shadow-lg md:max-w-xl"
     >
       <div className="flex">
-        <img
+        <Image
           className="w-24 rounded-s-lg object-cover"
           src={mapUrl}
           alt={`Mapa da localização: ${street}, ${number || 's/n'}`}
+          width={200}
+          height={200}
         />
         <div className="flex flex-1 flex-col justify-center p-2">
           <h3 className="font-semibold text-textColor">{neighborhood}</h3>

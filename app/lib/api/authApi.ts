@@ -1,5 +1,5 @@
 import api from './api';
-import { LoginFormData } from './schemas';
+import { LoginFormData } from '../schemas';
 import { handleApiCall } from './userApi';
 
 interface LoginResponse {

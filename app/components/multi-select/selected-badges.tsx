@@ -1,6 +1,6 @@
 import { Badge } from '@/components/ui/badge';
 import { XCircle } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/utils/utils';
 import { multiSelectVariants } from './multi-select';
 
 interface SelectedBadgesProps {

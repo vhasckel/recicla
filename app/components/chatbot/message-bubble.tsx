@@ -2,9 +2,7 @@ import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Message } from '@/types/message';
 
-interface MessageBubbleProps extends Message {}
-
-export function MessageBubble({ content, role, id }: MessageBubbleProps) {
+export function MessageBubble({ content, role, id }: Message) {
   if (id === 'typing') {
     return (
       <div className="flex justify-start">

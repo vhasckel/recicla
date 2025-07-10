@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { sendMessage } from '../lib/chatApi';
+import { sendMessage } from '../lib/api';
 import type { Message } from '@/types/message';
-import type { UserLocation } from '../lib/chatApi';
+import type { UserLocation } from '../lib/api';
 
 type TypingMessage = {
   id: 'typing';

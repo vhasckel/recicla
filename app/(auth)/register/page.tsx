@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import SignupForm from '@/components/features/auth/signup-form';
 
-export default function SignupPage() {
+export default function RegisterPage() {
   return (
     <Suspense
       fallback={

@@ -1,4 +1,4 @@
-import { registerUser } from '@/lib/userApi';
+import { registerUser } from '@/lib/api';
 import React, { useCallback, useState } from 'react';
 import { signupSchema, SignupFormData } from '@/lib/schemas';
 import { useRouter } from 'next/navigation';
@@ -27,7 +27,7 @@ export function useSignupForm() {
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const { name, value } = e.target;
-      setFormData((prev) => ({ ...prev, [name]: value as any }));
+      setFormData((prev) => ({ ...prev, [name]: value }));
       if (errors[name as keyof FormErrors]) {
         setErrors((prev) => ({ ...prev, [name]: undefined }));
       }

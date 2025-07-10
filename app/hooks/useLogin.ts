@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { loginUser } from '@/lib/authApi';
+import { loginUser } from '@/lib/api';
 import { loginSchema, LoginFormData } from '@/lib/schemas';
 
 type FormErrors = Partial<Record<keyof LoginFormData, string>>;

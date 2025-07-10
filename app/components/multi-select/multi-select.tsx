@@ -2,7 +2,7 @@ import * as React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { ChevronDown, XIcon, WandSparkles } from 'lucide-react';
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/utils/utils';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import {
