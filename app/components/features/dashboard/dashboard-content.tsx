@@ -1,10 +1,15 @@
 'use client';
 
 import { Suspense } from 'react';
-import Map from '@/components/features/dashboard/map';
 import { CollectionPointsSidebar } from '@/components/features/collection-points/collection-points-sidebar';
 import { ProfileSidebar } from '@/components/features/profile/profile-sidebar';
 import { useDashboardView } from '@/hooks/useDashboardView';
+import dynamic from 'next/dynamic';
+
+const Map = dynamic(() => import('@/components/features/dashboard/map'), {
+  ssr: false,
+  loading: () => <p>Carregando mapa...</p>,
+});
 
 export function DashboardContent() {
   const {
