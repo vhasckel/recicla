@@ -1,6 +1,5 @@
 'use client';
 
-import { HomeIcon, UserIcon, MapPinIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import clsx from 'clsx';
@@ -16,19 +15,7 @@ export function MobileNav() {
       <nav className="flex h-16 items-center justify-around">
         {links.map((link) => {
           const LinkIcon = link.icon;
-          const isActive =
-            link.href === '/dashboard'
-              ? pathname === link.href && !searchParams.get('view')
-              : link.href === '/dashboard?view=collection-points'
-                ? (pathname === '/dashboard' &&
-                    searchParams.get('view') === 'collection-points') ||
-                  pathname === '/collection-points' ||
-                  pathname === '/collection-points/new'
-                : link.href === '/dashboard?view=profile'
-                  ? (pathname === '/dashboard' &&
-                      searchParams.get('view') === 'profile') ||
-                    pathname === '/profile'
-                  : pathname.startsWith(link.href);
+          const isActive = link.isActive(pathname, searchParams);
 
           return (
             <Link

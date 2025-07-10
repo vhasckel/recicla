@@ -1,19 +1,29 @@
-import { HomeIcon, MapPinIcon, UserIcon } from '@heroicons/react/24/outline';
+import { HomeIcon, UserIcon, MapPinIcon } from '@heroicons/react/24/outline';
+import type { ReadonlyURLSearchParams } from 'next/navigation';
 
 export const NAVIGATION_LINKS = [
   {
+    name: 'Início',
     href: '/dashboard',
-    name: 'Home',
     icon: HomeIcon,
+    isActive: (pathname: string, searchParams: ReadonlyURLSearchParams) =>
+      pathname === '/dashboard' && !searchParams.get('view'),
   },
   {
+    name: 'Coletas',
     href: '/dashboard?view=collection-points',
-    name: 'Pontos',
     icon: MapPinIcon,
+    isActive: (pathname: string, searchParams: ReadonlyURLSearchParams) =>
+      (pathname === '/dashboard' &&
+        searchParams.get('view') === 'collection-points') ||
+      pathname.startsWith('/collection-points'),
   },
   {
-    href: '/dashboard?view=profile',
     name: 'Perfil',
+    href: '/dashboard?view=profile',
     icon: UserIcon,
+    isActive: (pathname: string, searchParams: ReadonlyURLSearchParams) =>
+      (pathname === '/dashboard' && searchParams.get('view') === 'profile') ||
+      pathname === '/profile',
   },
 ];

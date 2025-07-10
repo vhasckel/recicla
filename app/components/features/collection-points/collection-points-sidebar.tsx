@@ -12,8 +12,7 @@ import { SearchWrapper } from '@/components/features/collection-points/component
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import CollectionPointForm from '@/components/features/collection-points/components/collection-point-form';
-import { Suspense, useEffect, useState } from 'react';
-import { useMediaQuery } from '@/hooks/useMediaQuery';
+import { Suspense } from 'react';
 
 interface CollectionPointsSidebarProps {
   open: boolean;

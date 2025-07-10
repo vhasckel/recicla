@@ -5,11 +5,16 @@ import { CollectionPointsSidebar } from '@/components/features/collection-points
 import { ProfileSidebar } from '@/components/features/profile/profile-sidebar';
 import { useDashboardView } from '@/hooks/useDashboardView';
 import dynamic from 'next/dynamic';
+import type { ImpactMetricProps } from '@/types/impact-metric';
 
 const Map = dynamic(() => import('@/components/features/dashboard/map'), {
   ssr: false,
   loading: () => <p>Carregando mapa...</p>,
 });
+
+const userName = 'User';
+const impactMetrics: ImpactMetricProps[] = [];
+const onLogout = () => {};
 
 export function DashboardContent() {
   const {
@@ -45,6 +50,9 @@ export function DashboardContent() {
             <ProfileSidebar
               open={isProfileSidebarOpen}
               onOpenChange={handleProfileSidebarOpenChange}
+              userName={userName}
+              impactMetrics={impactMetrics}
+              onLogout={onLogout}
             />
           </Suspense>
         </>
