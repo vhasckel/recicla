@@ -24,8 +24,19 @@ export async function handleApiCall<T>(
 }
 
 export async function registerUser(userData: Omit<User, 'id'>): Promise<User> {
+  const payload = {
+    email: userData.email,
+    full_name: userData.name,
+    password: userData.password,
+    cpf: userData.cpf,
+    birth_date: userData.birthDate,
+    cep: userData.cep,
+    city: userData.city,
+    state: userData.state,
+    street: userData.street,
+  };
   const response = await handleApiCall(
-    api.post<User>('/user', userData),
+    api.post<User>('/user', payload),
     'Falha ao criar usuário.'
   );
   return response.data;

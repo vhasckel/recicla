@@ -63,7 +63,7 @@ export default function LoginForm(): JSX.Element {
           {!isSubmitting && <ArrowRightIcon className="ml-auto h-5 w-5" />}
         </Button>
         <div className="flex h-8 items-end">
-          <Link href="/signup" className="flex w-full justify-center gap-2">
+          <Link href="/register" className="flex w-full justify-center gap-2">
             <p className="text-sm text-gray-500">Não tem uma conta?</p>
             <span className="text-sm text-green-500">Crie uma agora</span>
           </Link>

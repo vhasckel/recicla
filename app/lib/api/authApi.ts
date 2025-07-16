@@ -3,7 +3,8 @@ import { LoginFormData } from '../schemas';
 import { handleApiCall } from './userApi';
 
 interface LoginResponse {
-  token: string;
+  access_token: string;
+  token_type: string;
 }
 
 export async function loginUser(

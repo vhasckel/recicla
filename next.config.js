@@ -11,6 +11,9 @@ const nextConfig = {
     }
     return config;
   },
+  images: {
+    domains: ['api.mapbox.com'],
+  },
 };
 
-module.exports = nextConfig;
+export default nextConfig;

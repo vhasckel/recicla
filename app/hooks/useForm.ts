@@ -1,47 +1,80 @@
-import { useState, useCallback } from 'react';
+'use client';
+
+import { useState, useCallback, FormEvent } from 'react';
+import { ZodSchema } from 'zod';
+
+interface UseFormOptions<TFormData, TResponse> {
+  initialData: TFormData;
+  schema: ZodSchema<TFormData>;
+  onSubmit: (data: TFormData) => Promise<TResponse>;
+  onSuccess?: (response: TResponse) => void;
+}
 
 type FormErrors<T> = Partial<Record<keyof T, string>>;
 
-export function useForm<T extends Record<string, unknown>>(initialState: T) {
-  const [formData, setFormData] = useState<T>(initialState);
-  const [errors, setErrors] = useState<FormErrors<T>>({});
+export function useForm<TFormData, TResponse>({
+  initialData,
+  schema,
+  onSubmit,
+  onSuccess,
+}: UseFormOptions<TFormData, TResponse>) {
+  const [formData, setFormData] = useState<TFormData>(initialData);
+  const [errors, setErrors] = useState<FormErrors<TFormData>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [apiError, setApiError] = useState<string | null>(null);
 
-  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    // Limpa o erro do campo quando ele é alterado
-    setErrors((prev) => ({ ...prev, [name]: undefined }));
-  }, []);
-
-  const resetForm = useCallback(() => {
-    setFormData(initialState);
-    setErrors({});
-  }, [initialState]);
-
-  const setFieldError = useCallback((field: keyof T, error: string) => {
-    setErrors((prev) => ({ ...prev, [field]: error }));
-  }, []);
-
-  const validateField = useCallback(
-    (field: keyof T, validator: (value: T[keyof T]) => string | undefined) => {
-      const error = validator(formData[field]);
-      if (error) {
-        setFieldError(field, error);
-        return false;
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = e.target;
+      setFormData((prev) => ({ ...prev, [name]: value }));
+      if (errors[name as keyof TFormData]) {
+        setErrors((prev) => ({ ...prev, [name]: undefined }));
       }
-      return true;
     },
-    [formData, setFieldError]
+    [errors]
+  );
+
+  const handleSubmit = useCallback(
+    async (e: FormEvent) => {
+      e.preventDefault();
+      setErrors({});
+      setApiError(null);
+
+      const result = schema.safeParse(formData);
+
+      if (!result.success) {
+        const fieldErrors: FormErrors<TFormData> = {};
+        result.error.issues.forEach((issue) => {
+          const path = issue.path[0] as keyof TFormData;
+          fieldErrors[path] = issue.message;
+        });
+        setErrors(fieldErrors);
+        return;
+      }
+
+      setIsSubmitting(true);
+      try {
+        const response = await onSubmit(result.data);
+        if (onSuccess) {
+          onSuccess(response);
+        }
+      } catch (err) {
+        setApiError(
+          err instanceof Error ? err.message : 'Ocorreu um erro inesperado.'
+        );
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [formData, schema, onSubmit, onSuccess]
   );
 
   return {
     formData,
     errors,
-    setErrors,
+    apiError,
+    isSubmitting,
     handleChange,
-    resetForm,
-    setFieldError,
-    validateField,
-    setFormData,
+    handleSubmit,
   };
 }

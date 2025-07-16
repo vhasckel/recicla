@@ -2,8 +2,8 @@
 
 import { Button } from '@/components/ui/button';
 import { FormField } from '@/components/ui/form-field';
-import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import { useSignupForm } from '@/hooks/useSignupForm';
+import { ArrowRightIcon } from '@heroicons/react/24/outline';
 
 type FormFieldKey =
   | 'name'

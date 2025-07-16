@@ -1,7 +1,3 @@
-# Estrutura do Projeto Recicla Next.js
-
-Este documento descreve a estrutura de pastas do projeto, organizada seguindo as melhores práticas do Next.js 13+ com App Router.
-
 ## Estrutura Principal
 
 ```
